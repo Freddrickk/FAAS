@@ -8,7 +8,19 @@ var config = {
 
     devServer: {
         inline: true,
-        port: 8080
+        port: 8080,
+        proxy: {
+            "/api": {
+                "target": {
+                    "host": "backend",
+                    "protocol": 'http:',
+                    "port": 8000
+                }
+            }
+            //ignorePath: true,
+            //changeOrigin: true,
+            //secure: false
+        }
     },
     module: {
         loaders: [
