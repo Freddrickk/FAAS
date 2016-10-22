@@ -10,6 +10,17 @@ Build the images and start the project.
 
 ```
 $ docker-compose build
+```
+
+Initialise the database
+
+```
+$ docker-compose run python manage.py
+```
+
+Start the stack
+
+```
 $ docker-compose up
 ```
 

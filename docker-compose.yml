@@ -2,12 +2,21 @@ version: '2'
 services:
   db:
     image: mongo
-  web:
-    build: .
+
+  backend:
+    build: ./containers/django/
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - .:/code
+      - ./faas/backend/:/code
     ports:
       - "8000:8000"
     depends_on:
       - db
+
+  reactjs:
+    build: ./containers/reactjs/
+    volumes:
+      - ./faas/frontend/app/:/app
+    ports:
+      - "8080:8080"
+    command: npm start
