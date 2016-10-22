@@ -16,7 +16,9 @@ services:
   reactjs:
     build: ./containers/reactjs/
     volumes:
-      - ./faas/frontend/app/:/app
+      - ./faas/frontend/app/:/project/app
     ports:
       - "8080:8080"
     command: npm start
+    depends_on:
+      - backend
