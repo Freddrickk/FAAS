@@ -1,3 +1,6 @@
 git+https://github.com/django-nonrel/django@nonrel-1.5
 git+https://github.com/django-nonrel/djangotoolbox
 git+https://github.com/django-nonrel/mongodb-engine
+
+djangorestframework==3.5.1
+Markdown==2.6.7
