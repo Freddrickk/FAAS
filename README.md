@@ -24,12 +24,21 @@ Start the stack
 $ docker-compose up
 ```
 
-Django now listens on port 8000
+Webpack-dev-server now listens on port 8080
 
+```
+localhost:8080
+```
+
+Django now listens on port 8000 or on the /api url
+
+```
+localhost:8080/api
+```
+or
 ```
 localhost:8000
 ```
-
 
 # Run command inside container
 
