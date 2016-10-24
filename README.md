@@ -16,7 +16,7 @@ Initialise the database
 
 ```
 $ docker-compose run backend python manage.py migrate
-$ docker-compose run backend createsuperuser
+$ docker-compose run backend python manage.py createsuperuser
 ```
 
 Start the stack
