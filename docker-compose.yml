@@ -1,7 +1,11 @@
 version: '2'
 services:
   db:
-    image: mongo
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=super_password
+      - POSTGRES_USER=faas_api
+      - POSTGRES_DB=faas_api
 
   backend:
     build: ./containers/django/

@@ -78,12 +78,14 @@ WSGI_APPLICATION = 'api.wsgi.application'
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
 DATABASES = {
-   'default' : {
-      'ENGINE' : 'django_mongodb_engine',
-      'NAME' : 'api',
-      'HOST' : 'db',
-      'PORT' : 27017,
-   }
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'faas_api',
+        'USER': 'faas_api',
+        'PASSWORD': 'super_password',
+        'HOST': 'db',
+        'PORT': '5432',
+    }
 }
 
 # Password validation

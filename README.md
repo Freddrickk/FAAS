@@ -9,25 +9,20 @@ security testing on their applications using a user-friendly web ui.
 Build the images and start the project.
 
 ```
-$ docker-compose build
+$ docker-compose build --no-cache
 ```
 
 Initialise the database
 
 ```
-$ docker-compose run python manage.py
+$ docker-compose run backend python manage.py migrate
+$ docker-compose run backend createsuperuser
 ```
 
 Start the stack
 
 ```
 $ docker-compose up
-```
-
-Webpack-dev-server now listens on port 8080
-
-```
-localhost:8080
 ```
 
 Django now listens on port 8000 or on the /api url
@@ -39,6 +34,7 @@ or
 ```
 localhost:8000
 ```
+
 
 # Run command inside container
 
