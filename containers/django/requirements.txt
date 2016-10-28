@@ -3,4 +3,5 @@ psycopg2
 django-allauth
 djangorestframework
 django-rest-auth
+drfdocs
 Markdown

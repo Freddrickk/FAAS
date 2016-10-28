@@ -35,6 +35,10 @@ or
 localhost:8000
 ```
 
+# Consult the API documentation
+```
+localhost:8080/api/docs/
+```
 
 # Run command inside container
 

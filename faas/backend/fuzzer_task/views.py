@@ -5,6 +5,10 @@ from .models import Task
 from .serializers import TaskSerializer, TaskListSerializer
 
 class TaskList(ListCreateAPIView):
+    """
+    List all the task when using method GET and will create a new
+    fuzzing task on POST
+    """
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
 
@@ -16,6 +20,9 @@ class TaskList(ListCreateAPIView):
         serializer.save(owner=self.request.user)
 
 class TaskDetail(RetrieveAPIView):
+    """
+    Will show information on a task including the binary file in base 64
+    """
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
 
