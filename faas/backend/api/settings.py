@@ -35,13 +35,22 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # External apps
+    'allauth',
+    'allauth.account',
     'rest_framework',
+    'rest_framework.authtoken',
+    'rest_auth',
+    'rest_auth.registration',
 
+    # Local apps
     'api',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -54,6 +63,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'api.urls'
+
+SITE_ID = 1
 
 TEMPLATES = [
     {

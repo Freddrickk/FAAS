@@ -1,4 +1,6 @@
 django
 psycopg2
-djangorestframework==3.5.1
-Markdown==2.6.7
+django-allauth
+djangorestframework
+django-rest-auth
+Markdown
