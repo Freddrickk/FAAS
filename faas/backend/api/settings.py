@@ -49,6 +49,7 @@ INSTALLED_APPS = [
 
     # Local apps
     'api',
+    'fuzzer_task',
 ]
 
 

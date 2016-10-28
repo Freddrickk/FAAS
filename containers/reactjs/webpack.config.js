@@ -16,6 +16,13 @@ var config = {
                     "protocol": 'http:',
                     "port": 8000
                 }
+            },
+            "/static": {
+                "target": {
+                    "host": "backend",
+                    "protocol": 'http:',
+                    "port": 8000
+                }
             }
             //ignorePath: true,
             //changeOrigin: true,
