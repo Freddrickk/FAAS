@@ -13,4 +13,8 @@ ADD ./webpack.config.js .
 RUN npm install webpack && npm install webpack-dev-server
 RUN npm install react --save && npm install react-dom --save
 
+RUN npm install bootstrap@3
+RUN npm install classnames
+RUN npm install validator
+
 RUN npm install babel-core && npm install babel-loader && npm install babel-preset-react && npm install babel-preset-es2015
