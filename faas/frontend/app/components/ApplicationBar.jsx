@@ -41,7 +41,6 @@ class LoginButton extends Component {
       );
   }
 }
-console.log(LoginButton);
 const VisibleLoginButton = connect(
   LoginButton.mapStateToProps,
   LoginButton.mapDispatchToProps
