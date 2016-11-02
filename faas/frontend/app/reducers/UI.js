@@ -6,8 +6,6 @@ const initialState = {
 
 const UI = (state = initialState, action) => {
 
-  console.log(action);
-
   switch (action.type) {
     case TOGGLE_LOGIN_MODAL:
       return Object.assign({}, state, {

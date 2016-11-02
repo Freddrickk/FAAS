@@ -1,15 +1,19 @@
 import React, { Component } from 'react';
+import Paper from 'material-ui/Paper';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import { connect } from 'react-redux'
 
 import { closeLoginModal } from '../actions/UI'
+import AuthForms from './AuthForms.jsx'
 
 
-/**
- * A modal dialog can only be closed by selecting one of the actions.
- */
+const modalStyle = {
+  width: '100%',
+  maxWidth: 'none',
+};
+
 class LoginModal extends Component {
 
   static mapStateToProps(state) {
@@ -46,14 +50,12 @@ class LoginModal extends Component {
     return (
       <div>
         <Dialog
-          title="Authentication"
-          actions={actions}
-          modal={true}
+          style={modalStyle}
           open={this.props.isOpen()}
+          onRequestClose={this.props.closeModal}
         >
-          Only actions can close this dialog.
-          Only actions can close this dialog.
-          Only actions can close this dialog.
+          <AuthForms />
+
         </Dialog>
       </div>
     );
