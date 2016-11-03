@@ -10,34 +10,43 @@ import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import { connect } from 'react-redux'
 
 import { openLoginModal } from '../actions/UI';
+import { logout } from '../actions/User'
 
 class LoginButton extends Component {
   static muiName = 'FlatButton';
 
-  state = {
-    logged: false,
-  };
+  constructor() {
+    super();
+    this.onLogout = this.onLogout.bind(this)
+  }
 
   static mapStateToProps(state) {
-    return {};
+    return {
+      isConnected: () => state.User.isConnected,
+      getToken: () => state.User.credentials.token
+    };
   }
 
   static mapDispatchToProps(dispatch) {
     return {
-      openLoginModal: () => {
-        dispatch(openLoginModal());
-      }
+      openLoginModal: () => dispatch(openLoginModal()),
+      logout: token => dispatch(logout(token))
     }
   }
 
+  onLogout(e) {
+    e.preventDefault();
+    this.props.logout(this.props.getToken());
+  }
+
   render() {
-    if (!this.state.logged)
+    if (!this.props.isConnected())
       return (
         <FlatButton style={this.props.style} onClick={this.props.openLoginModal} label="Login" />
       );
     else
       return (
-        <FlatButton style={this.props.style} label="Logout" />
+        <FlatButton style={this.props.style} onClick={this.onLogout} label="Logout" />
       );
   }
 }

@@ -18,7 +18,7 @@ const User = (state = initialState, action) => {
       });
 
     case SAVE_USERNAME:
-      currentState = Object.assign({}, state);
+      let currentState = Object.assign({}, state);
       currentState.credentials.username = action.username;
       return Object.assign({}, state, currentState);
 

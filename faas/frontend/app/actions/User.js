@@ -13,7 +13,7 @@ export function saveUserName(username) {
   return {type: SAVE_USERNAME, username: username};
 }
 
-export function logout() {
+export function cleanCredentials() {
   return {type: LOGOUT};
 }
 
@@ -25,10 +25,9 @@ const headers = new Headers({
 const handleJSON = (dispatch, json) => {
   if (json.hasOwnProperty('key')) {
     dispatch(saveToken(json.key))
+    dispatch(fetchUsername(json.key))
     dispatch(closeLoginModal());
-  }
-
-  else
+  } else
     dispatch(setLoginErrors(json))
 }
 
@@ -41,5 +40,40 @@ export function fetchLogin(creds) {
      body: JSON.stringify(creds)})
      .then(response => response.json())
      .then(json => handleJSON(dispatch, json))
+ }
+}
+
+export function fetchUsername(token) {
+
+  let header = new Headers({
+    'Content-Type': 'application/json',
+    'Authorization': 'Token ' + token
+  });
+
+ return dispatch => {
+   dispatch(startLoginFetching);
+   fetch('/api/auth/user/', {
+     headers: header,
+     method: 'get'})
+     .then(response => response.json())
+     .then(json => dispatch(saveUserName(json.username)))
+ }
+}
+
+export function logout(token) {
+
+  let header = new Headers({
+    'Content-Type': 'application/json',
+    'Authorization': 'Token ' + token
+  });
+
+ return dispatch => {
+   dispatch(startLoginFetching);
+   fetch('/api/auth/logout/', {
+     headers: header,
+     method: 'post'})
+     .then((_) => {
+       dispatch(cleanCredentials());
+     });
  }
 }
