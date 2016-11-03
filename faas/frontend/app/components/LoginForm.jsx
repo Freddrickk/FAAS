@@ -26,7 +26,8 @@ class LoginForm extends Component {
           type="password" errorText={this.getError('password')} />
 
         <p style={{color: "rgb(244, 67, 54)"}} >{this.getError('non_field_errors')}</p>
-        </form>
+      </form>
+
     )
   }
 }

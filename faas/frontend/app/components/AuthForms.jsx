@@ -8,7 +8,6 @@ import { startLoginFetching } from '../actions/UI'
 import { fetchLogin } from '../actions/User'
 
 const buttonStyle = {marginTop: "20px", marginRight: "20px"};
-
 class AuthForms extends Component {
 
   constructor() {
