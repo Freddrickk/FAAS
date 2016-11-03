@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Paper from 'material-ui/Paper';
 
+import TaskForm from './TaskForm.jsx';
 import ApplicationBar from './ApplicationBar.jsx';
 import LoginModal from './LoginModal.jsx';
 import { connect } from 'react-redux';
@@ -16,6 +17,7 @@ class MainUI extends Component {
   constructor() {
     super();
     this.getHomeText = this.getHomeText.bind(this);
+    this.showTaskForm = this.showTaskForm.bind(this);
   }
 
   static mapStateToProps(state) {
@@ -25,6 +27,15 @@ class MainUI extends Component {
     };
   }
 
+  showTaskForm() {
+    if (this.props.isConnected())
+      return(
+        <TaskForm />
+      );
+    return(
+      ""
+    );
+  }
 
   getHomeText() {
     if (!this.props.isConnected())
@@ -49,6 +60,7 @@ class MainUI extends Component {
         <Paper style={paperStyle}>
           {this.getHomeText()}
         </Paper>
+        {this.showTaskForm()}
         <LoginModal />
       </div>
     );

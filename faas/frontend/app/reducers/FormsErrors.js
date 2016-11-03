@@ -1,7 +1,9 @@
-import { SET_LOGIN_ERROR, CLEAR_LOGIN_ERROR } from "../actions/FormsErrors"
+import { SET_LOGIN_ERROR, CLEAR_LOGIN_ERROR,
+         SET_UPLOAD_TASK_ERROR, CLEAR_UPLOAD_TASK_ERROR} from "../actions/FormsErrors"
 
 const initialState = {
-  loginForm: {}
+  loginForm: {},
+  taskUpload: {}
 }
 
 const FormsErrors = (state = initialState, action) => {
@@ -16,6 +18,16 @@ const FormsErrors = (state = initialState, action) => {
       return Object.assign({}, state, {
         loginForm: {}
       });
+
+    case SET_UPLOAD_TASK_ERROR:
+    return Object.assign({}, state, {
+      taskUpload: action.errors
+    });
+
+    case CLEAR_UPLOAD_TASK_ERROR:
+    return Object.assign({}, state, {
+      taskUpload: {}
+    });
 
     default:
       return state;

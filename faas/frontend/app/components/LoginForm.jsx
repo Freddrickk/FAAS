@@ -10,8 +10,6 @@ class LoginForm extends Component {
   }
 
   getError(fieldname) {
-    console.log('getError')
-    console.log(this.props.errors)
     if (this.props.errors.hasOwnProperty(fieldname))
       return this.props.errors[fieldname];
     return "";
