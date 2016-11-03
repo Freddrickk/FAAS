@@ -1,11 +1,14 @@
 import { startLoginFetching, stopLoginFetching, closeLoginModal } from './UI'
 import { setLoginErrors } from './FormsErrors'
 
+import Cookies from 'js-cookie';
+
 export const SAVE_TOKEN = 'SAVE_TOKEN';
 export const SAVE_USERNAME = 'SAVE_USERNAME';
 export const LOGOUT = 'LOGOUT';
 
 export function saveToken(token) {
+  Cookies.set('token', token, { expires: 1 });
   return {type: SAVE_TOKEN, token: token};
 }
 
@@ -74,6 +77,7 @@ export function logout(token) {
      method: 'post'})
      .then((_) => {
        dispatch(cleanCredentials());
+       Cookies.remove('token');
      });
  }
 }
