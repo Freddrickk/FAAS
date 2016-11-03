@@ -1,5 +1,5 @@
 import { startLoginFetching, stopLoginFetching, closeLoginModal } from './UI'
-import { setLoginErrors } from './FormsErrors'
+import { setLoginErrors, setSignupErrors } from './FormsErrors'
 
 import Cookies from 'js-cookie';
 
@@ -25,7 +25,7 @@ const headers = new Headers({
   'Content-Type': 'application/json'
 });
 
-const handleJSON = (dispatch, json) => {
+const handleLoginJSON = (dispatch, json) => {
   if (json.hasOwnProperty('key')) {
     dispatch(saveToken(json.key))
     dispatch(fetchUsername(json.key))
@@ -42,7 +42,28 @@ export function fetchLogin(creds) {
      method: 'post',
      body: JSON.stringify(creds)})
      .then(response => response.json())
-     .then(json => handleJSON(dispatch, json))
+     .then(json => handleLoginJSON(dispatch, json))
+ }
+}
+
+const handleSignupJSON = (dispatch, json) => {
+  if (json.hasOwnProperty('key')) {
+    dispatch(saveToken(json.key))
+    dispatch(fetchUsername(json.key))
+    dispatch(closeLoginModal());
+  } else
+    dispatch(setSignupErrors(json))
+}
+
+export function fetchSignup(creds) {
+ return dispatch => {
+   dispatch(startLoginFetching);
+   fetch('/api/auth/registration', {
+     headers: headers,
+     method: 'post',
+     body: JSON.stringify(creds)})
+     .then(response => response.json())
+     .then(json => handleSignupJSON(dispatch, json))
  }
 }
 

@@ -4,11 +4,12 @@ import CircularProgress from 'material-ui/CircularProgress';
 import { connect } from 'react-redux'
 
 import LoginForm from './LoginForm.jsx'
-import { startLoginFetching } from '../actions/UI'
+import { startLoginFetching, activeSignup } from '../actions/UI'
 import { fetchLogin } from '../actions/User'
 
 const buttonStyle = {marginTop: "20px", marginRight: "20px"};
-class AuthForms extends Component {
+
+class LoginWrapper extends Component {
 
   constructor() {
     super();
@@ -30,7 +31,7 @@ class AuthForms extends Component {
       },
       getErrors: () => {
         return state.FormsErrors.loginForm;
-      }
+      },
     }
   }
 
@@ -38,7 +39,8 @@ class AuthForms extends Component {
     return {
       loginRequest: (creds) => {
         dispatch(fetchLogin(creds));
-      }
+      },
+      switchToSignup: () => dispatch(activeSignup())
     }
   }
 
@@ -65,10 +67,12 @@ class AuthForms extends Component {
           disabled={this.props.buttonIsBlocked()}
         />
         {this.showProgress()}
-
+        <RaisedButton label="I don't have and account" style={buttonStyle}
+          secondary={true} onClick={this.props.switchToSignup}
+        />
       </div>
     );
   }
 }
 
-export default connect(AuthForms.mapStateToProps, AuthForms.mapDispatchToProps)(AuthForms);
+export default connect(LoginWrapper.mapStateToProps, LoginWrapper.mapDispatchToProps)(LoginWrapper);

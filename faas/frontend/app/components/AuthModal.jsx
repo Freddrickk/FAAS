@@ -5,8 +5,9 @@ import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import { connect } from 'react-redux'
 
-import { closeLoginModal } from '../actions/UI'
-import AuthForms from './AuthForms.jsx'
+import { closeLoginModal, LOGIN_FORM, SIGNUP_FORM } from '../actions/UI'
+import LoginWrapper from './LoginWrapper.jsx'
+import SignupWrapper from './SignupWrapper.jsx'
 
 
 const modalStyle = {
@@ -14,13 +15,14 @@ const modalStyle = {
   maxWidth: 'none',
 };
 
-class LoginModal extends Component {
+class AuthModal extends Component {
 
   static mapStateToProps(state) {
     return {
       isOpen: () => {
         return state.UI.loginModalIsOpen;
-      }
+      },
+      getCurrentForm: () => state.UI.activeAuthForm
     };
   }
 
@@ -32,21 +34,16 @@ class LoginModal extends Component {
     };
   }
 
-  render() {
-    const actions = [
-      <FlatButton
-        label="Cancel"
-        primary={true}
-        onTouchTap={this.props.closeModal}
-      />,
-      <FlatButton
-        label="Submit"
-        primary={true}
-        disabled={true}
-        onTouchTap={this.props.closeModal}
-      />,
-    ];
+  renderForm(currentForm) {
+    switch (currentForm) {
+      case LOGIN_FORM:
+        return (<LoginWrapper />);
+      case SIGNUP_FORM:
+        return (<SignupWrapper />);
+    }
+  }
 
+  render() {
     return (
       <div>
         <Dialog
@@ -54,11 +51,10 @@ class LoginModal extends Component {
           open={this.props.isOpen()}
           onRequestClose={this.props.closeModal}
         >
-          <AuthForms />
-
+          {this.renderForm(this.props.getCurrentForm())}
         </Dialog>
       </div>
     );
   }
 }
-export default connect(LoginModal.mapStateToProps, LoginModal.mapDispatchToProps)(LoginModal)
+export default connect(AuthModal.mapStateToProps, AuthModal.mapDispatchToProps)(AuthModal)

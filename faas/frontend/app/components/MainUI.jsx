@@ -3,7 +3,7 @@ import Paper from 'material-ui/Paper';
 
 import TaskForm from './TaskForm.jsx';
 import ApplicationBar from './ApplicationBar.jsx';
-import LoginModal from './LoginModal.jsx';
+import AuthModal from './AuthModal.jsx';
 import { connect } from 'react-redux';
 
 const paperStyle = {
@@ -61,7 +61,7 @@ class MainUI extends Component {
           {this.getHomeText()}
         </Paper>
         {this.showTaskForm()}
-        <LoginModal />
+        <AuthModal />
       </div>
     );
   }
