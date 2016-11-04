@@ -67,7 +67,7 @@ class LoginWrapper extends Component {
           disabled={this.props.buttonIsBlocked()}
         />
         {this.showProgress()}
-        <RaisedButton label="I don't have and account" style={buttonStyle}
+        <RaisedButton label="I don't have an account" style={buttonStyle}
           secondary={true} onClick={this.props.switchToSignup}
         />
       </div>

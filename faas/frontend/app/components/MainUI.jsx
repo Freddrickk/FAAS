@@ -42,7 +42,7 @@ class MainUI extends Component {
       return(
         <div>
           <h1>You are not connected</h1>
-          <p>Please auhtenticate to begin fuzzing stuff</p>
+          <p>Please authenticate to begin fuzzing stuff</p>
         </div>
       );
     return(
