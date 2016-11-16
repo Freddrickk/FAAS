@@ -10,7 +10,10 @@ import NavigationClose from 'material-ui/svg-icons/navigation/close';
 import { connect } from 'react-redux'
 
 import { openLoginModal } from '../actions/UI';
-import { logout } from '../actions/User'
+import { logout } from '../actions/User';
+
+import Drawer from 'material-ui/Drawer';
+import FuzzingTaskList from './FuzzingTaskList.jsx';
 
 class LoginButton extends Component {
   static muiName = 'FlatButton';
@@ -56,19 +59,42 @@ const VisibleLoginButton = connect(
 )(LoginButton);
 
 
+//injectTapEventPlugin();
+
 class ApplicationBar extends Component {
+
+  constructor(props){
+	super(props);
+	this.state = {open: false};
+  }
 
   handleChange = (event, logged) => {
     this.setState({logged: logged});
   };
 
-  render() {
+  handleToggle = () => this.setState({open: !this.state.open});
+
+  handleCloseAndNavigation = (event, logged) => {
+	this.setState({open: false});
+  };
+
+  render(param) {
     return (
       <div>
+		<Drawer
+		docked={false}
+		open={this.state.open}>
+			<MenuItem onTouchTap={this.handleCloseAndNavigation} >Fuzzing Task List</MenuItem>
+			<MenuItem onTouchTap={this.handleCloseAndNavigation}>Crash Report List</MenuItem>
+		</Drawer>
+
+		<header>
         <AppBar
+		  onLeftIconButtonTouchTap={this.handleToggle}
           title="Fuzzer as a service"
           iconElementRight={<VisibleLoginButton />}
         />
+		</header>
       </div>
     );
   }
