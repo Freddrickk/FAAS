@@ -46,3 +46,4 @@ export function uploadBinary(obj, token) {
      .then(json => handleJSON(json, dispatch))
  }
 }
+
