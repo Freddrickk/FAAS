@@ -6,6 +6,9 @@ import ApplicationBar from './ApplicationBar.jsx';
 import AuthModal from './AuthModal.jsx';
 import { connect } from 'react-redux';
 
+import FuzzingTaskList from './FuzzingTaskList.jsx';
+import CrashReportList from './CrashReportList.jsx';
+
 const paperStyle = {
   margin: 0,
   padding: 20,
@@ -18,6 +21,7 @@ class MainUI extends Component {
     super();
     this.getHomeText = this.getHomeText.bind(this);
     this.showTaskForm = this.showTaskForm.bind(this);
+	this.state = {pageToDisplay: "uploadFileMenu"};
   }
 
   static mapStateToProps(state) {
@@ -28,10 +32,21 @@ class MainUI extends Component {
   }
 
   showTaskForm() {
-    if (this.props.isConnected())
-      return(
-        <TaskForm />
-      );
+	if (this.props.isConnected()){
+		if(this.state.pageToDisplay == "uploadFileMenu") {
+		  return(
+		    <TaskForm />
+		  );
+		} else if(this.state.pageToDisplay == "fuzzingTaskList"){
+		  return(
+			<FuzzingTaskList />
+		  );
+		} else if(this.state.pageToDisplay == "crashReportList"){
+		  return(
+			<CrashReportList />
+		  );
+		}
+	}
     return(
       ""
     );
@@ -53,16 +68,21 @@ class MainUI extends Component {
     );
   }
 
+  changeDetailPage(newPage) {
+	this.setState({pageToDisplay: newPage});
+  }
+
   render() {
+
     return (
-      <div>
-        <ApplicationBar/>
-        <Paper style={paperStyle}>
-          {this.getHomeText()}
-        </Paper>
-        {this.showTaskForm()}
-        <AuthModal />
-      </div>
+		  <div>
+		    <ApplicationBar changeDetailPage={this.changeDetailPage.bind(this)}/>
+		    <Paper style={paperStyle}>
+		      {this.getHomeText()}
+		    </Paper>
+		    {this.showTaskForm()}
+		    <AuthModal />
+		  </div>
     );
   }
 }

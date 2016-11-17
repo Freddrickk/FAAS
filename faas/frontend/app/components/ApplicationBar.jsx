@@ -13,7 +13,6 @@ import { openLoginModal } from '../actions/UI';
 import { logout } from '../actions/User';
 
 import Drawer from 'material-ui/Drawer';
-import FuzzingTaskList from './FuzzingTaskList.jsx';
 
 class LoginButton extends Component {
   static muiName = 'FlatButton';
@@ -59,8 +58,6 @@ const VisibleLoginButton = connect(
 )(LoginButton);
 
 
-//injectTapEventPlugin();
-
 class ApplicationBar extends Component {
 
   constructor(props){
@@ -74,8 +71,19 @@ class ApplicationBar extends Component {
 
   handleToggle = () => this.setState({open: !this.state.open});
 
-  handleCloseAndNavigation = (event, logged) => {
+  handleCloseAndNavToFuzzingTaskList = (event, logged) => {
 	this.setState({open: false});
+	this.props.changeDetailPage("fuzzingTaskList");
+  };
+
+  handleCloseAndNavToUploadDetailPage = () => {
+	this.setState({open: false});
+	this.props.changeDetailPage("uploadFileMenu");
+  };
+
+  handleCloseAndNavToCrashReportList = () => {
+	this.setState({open: false});
+	this.props.changeDetailPage("crashReportList");
   };
 
   render(param) {
@@ -84,8 +92,9 @@ class ApplicationBar extends Component {
 		<Drawer
 		docked={false}
 		open={this.state.open}>
-			<MenuItem onTouchTap={this.handleCloseAndNavigation} >Fuzzing Task List</MenuItem>
-			<MenuItem onTouchTap={this.handleCloseAndNavigation}>Crash Report List</MenuItem>
+			<MenuItem onTouchTap={this.handleCloseAndNavToUploadDetailPage}>Upload File Menu</MenuItem>
+			<MenuItem onTouchTap={this.handleCloseAndNavToFuzzingTaskList}>Fuzzing Task List</MenuItem>
+			<MenuItem onTouchTap={this.handleCloseAndNavToCrashReportList}>Crash Report List</MenuItem>
 		</Drawer>
 
 		<header>
