@@ -4,7 +4,68 @@ import Paper from 'material-ui/Paper';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import { connect } from 'react-redux';
 
-import { loadTaskList } from '../actions/Task';
+
+
+// ================ this part is use to do an asynchronous call to the REST API in order to get the fuzzing task list from the connected user
+import logger from 'redux-logger';
+import thunk from 'redux-thunk';
+import { applyMiddleware, createStore } from 'redux';
+import Cookies from 'js-cookie';
+import { Provider } from 'react-redux';
+
+const initialState = {
+	fetching: false,
+	fetched: false,
+	fuzzingTaskList: [],
+	error: null
+}
+
+const reducer = (state=initialState, action) => {
+	switch(action.type){
+		case "FETCH_FUZZING_TASKS": {
+			return{...state, fetching: true}
+			break;
+		}
+
+		case "RECEIVE_FUZZING_TASKS": {
+			return{...state, fetching: false, fetched:true, fuzzingTaskList: action.payload}
+			break;
+		}
+
+		case "FETCH_FUZZING_TASKS_ERROR": {
+			return{...state, fetching: false, error: action.payload}
+			break;
+		}
+
+	}
+	return state
+}
+const middleware = applyMiddleware(thunk, logger())
+const store = createStore(reducer, middleware)
+store.dispatch((dispatch) => {
+	dispatch({type: "FETCH_FUZZING_TASKS"})
+	let token = Cookies.get('token');
+   let headers = new Headers({
+     'Content-Type': 'application/json',
+     'Authorization': 'Token ' + token
+   });
+
+	fetch('/api/task/', {     
+	headers: headers,
+     method: 'get'})
+	.then((response) => {
+		dispatch({type: "RECEIVE_FUZZING_TASKS", payload: response.data})
+	})
+	.catch((err) => {
+		dispatch({type: "FETCH_FUZZING_TASKS_ERROR"}, payload: err)
+	})
+	//do something async
+	dispatch({type: "BAR"})
+})
+// ================
+
+
+
 
 const paperStyle = {
   margin: 0,
@@ -79,7 +140,7 @@ class FuzzingTaskList extends Component {
 			  </TableRow>
 			</TableHeader>
 			<TableBody displayRowCheckbox={this.state.displayRowCheckbox}>
-		        {tableData.map( (row, index) => (
+		        {initialState.fuzzingTaskList.map( (row, index) => (
 		          <TableRow key={index} selected={row.selected}>
 		            <TableRowColumn>{row.name}</TableRowColumn>
 		            <TableRowColumn>{row.owner}</TableRowColumn>

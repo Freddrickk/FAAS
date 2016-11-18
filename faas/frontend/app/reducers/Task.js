@@ -1,5 +1,5 @@
 import { SET_BINARY_FILE, CLEAR_BINARY_FILE,
-         SET_BINARY_NAME, CLEAR_BINARY_NAME} from '../actions/Task'
+         SET_BINARY_NAME, CLEAR_BINARY_NAME } from '../actions/Task'
 
 const initialState = {
   b64_binary_file: "",

@@ -23,5 +23,7 @@ RUN npm install --save react-tap-event-plugin
 RUN npm install --save redux-form-material-ui
 RUN npm install --save js-cookie
 RUN npm install --save react-file-reader-input
+RUN npm install --save redux-logger
+RUN npm install --save axios
 
 RUN npm install babel-core && npm install babel-loader && npm install babel-preset-react && npm install babel-preset-es2015 && npm install babel-preset-stage-0 && npm install --save babel-plugin-transform-class-properties
