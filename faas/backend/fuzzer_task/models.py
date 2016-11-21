@@ -14,3 +14,16 @@ class Task(models.Model):
     def __unicode__(self):
         return '<Task: %s>' % self.name
 
+
+class CrashReport(models.Model):
+
+    task = models.ForeignKey('Task', on_delete=models.CASCADE)
+    payload = models.CharField(max_length=100000, null=False, blank=False)
+    signal = models.CharField(max_length=40, null=False, blank=False)
+
+    def __unicode__(self):
+        return '<CrashReport: %s : %s>' % (self.owner.name, self.signal)
+
+    @classmethod
+    def create(cls, task, signal, payload):
+        return cls(owner=task, signal=signal, payload=payload)

@@ -65,22 +65,21 @@ class LinuxProcessStdinTarget(ServerTarget):
                 os.waitpid(self.pid, 0)
                 report = Report('CRASH')
 
-                report.failed(SIGNALS[os.WSTOPSIG(status)])
-                self.report.add('fail', report)
+                report.add('payload', payload)
+                report.add('signal', SIGNALS[os.WSTOPSIG(status)])
+                report.failed()
+                self.report.add('crash', report)
                 return
             else:
                 libc.ptrace(PTRACE_CONT, self.pid, None, None)
 
             pid, status = os.waitpid(self.pid, 0)
 
-
     def _receive_from_target(self):
         pass
 
     def get_report(self):
         self.report = super(LinuxProcessStdinTarget, self).get_report()
-        self.report.add('signals', self.signals)
-
         return self.report
 
     def teardown(self):

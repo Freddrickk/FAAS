@@ -3,10 +3,11 @@ from rest_framework.generics import ListCreateAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Task
+from .models import Task, CrashReport
 from .serializers import TaskSerializer, TaskListSerializer
 
 from .fuzzer.fuzzer import launch_fuzzing
+
 
 class TaskList(ListCreateAPIView):
     """
@@ -22,8 +23,14 @@ class TaskList(ListCreateAPIView):
         return Response(serializer.data)
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
-        print launch_fuzzing()
+        task = serializer.save(owner=self.request.user)
+        #print self.request.data['name']
+
+        for signal, payload in launch_fuzzing('test', '/code/fuzzer_task/fuzzer/examples/vuln', []):
+            cr = CrashReport.create(task, signal, payload)
+            cr.save()
+
+
 
 
 class TaskDetail(RetrieveAPIView):
