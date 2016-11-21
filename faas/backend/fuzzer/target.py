@@ -1,14 +1,16 @@
 import ctypes
 import os
 import time
-from signal import SIGSTOP, SIGTRAP
+import signal
 
 from kitty.data.report import Report
 from kitty.targets import ServerTarget
 import ptrace.debugger
+from ptrace_types import *
 from ptrace.debugger.process_event import ProcessExit
 
 
+SIGNALS = dict((k, v) for v, k in reversed(sorted(signal.__dict__.items())) if v.startswith('SIG') and not v.startswith('SIG_'))
 libc = ctypes.CDLL('libc.so.6')
 
 
@@ -24,7 +26,6 @@ class LinuxProcessStdinTarget(ServerTarget):
         self.args = args
         self.is_active = False
         self.process = None
-        self.dbg = None
         self.signals = None
         self.report = Report(name)
         self.pid = None
@@ -32,40 +33,44 @@ class LinuxProcessStdinTarget(ServerTarget):
     def pre_test(self, test_number):
         super(LinuxProcessStdinTarget, self).pre_test(test_number)
 
-        self.dbg = ptrace.debugger.PtraceDebugger()
-
-        if self.is_active:
-            return
-
         self.pid = os.fork()
 
         if self.pid == 0:
             self.is_active = True
-            libc.ptrace(ctypes.c_uint32(0), ctypes.c_uint32(0), None, None)
+            libc.ptrace(PTRACE_TRACEME, ctypes.c_uint32(0), None, None)
             os.execve(self.program, self.args, {})
-
-        else:
-            self.process = self.dbg.addProcess(self.pid, is_attached=False)
 
     def post_test(self, test_number):
         pass
 
     def _send_to_target(self, payload):
-        if self.pid == 0:
-            return
+        pid, status = os.waitpid(self.pid, 0)
 
         with open('/proc/{}/fd/0'.format(self.pid), 'w') as f:
             f.write(payload + '\n')
 
-        self.process.cont()
-        self.signals = self.process.waitSignals(SIGSTOP, SIGTRAP)
-        try:
-            self.process.cont()
-            self.signals = self.process.waitSignals()
+        while True:
+            if os.WIFEXITED(status):
+                print 'Program exited with exit code {}'.format(os.WEXITSTATUS(status))
+                return
+            elif os.WIFSIGNALED(status):
+                print 'Terminated with unhandled signal : {}'.format(os.WTERMSIG(status))
+                return
+            elif os.WIFSTOPPED(status):
+                print "Stopped due to signal {}".format(SIGNALS[os.WSTOPSIG(status)])
 
-            print self.signals
-        except Exception as e:
-            pass
+            sig = os.WSTOPSIG(status)
+
+            if sig == signal.SIGBUS or sig == signal.SIGSEGV or sig == signal.SIGSYS or sig == signal.SIGILL:
+                print 'CRASH'
+                libc.ptrace(PTRACE_DETACH, self.pid, None, None)
+                os.waitpid(self.pid, 0)
+                return
+            else:
+                libc.ptrace(PTRACE_CONT, self.pid, None, None)
+
+            pid, status = os.waitpid(self.pid, 0)
+
 
     def _receive_from_target(self):
         pass
@@ -78,4 +83,3 @@ class LinuxProcessStdinTarget(ServerTarget):
 
     def teardown(self):
         super(LinuxProcessStdinTarget, self).teardown()
-        self.dbg.deleteProcess(self.pid)

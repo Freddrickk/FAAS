@@ -1,3 +1,5 @@
+import time
+
 from katnip.targets import application
 from kitty.model import *
 from kitty.fuzzers import ServerFuzzer
@@ -31,11 +33,5 @@ target.set_controller(controller)
 
 fuzzer.set_model(model)
 fuzzer.set_target(target)
-fuzzer.set_delay_between_tests(0.51)
 
-fuzzer.set_delay_between_tests(1)
 fuzzer.start()
-
-
-
-
