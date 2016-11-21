@@ -1,9 +1,12 @@
+import os
 from rest_framework.generics import ListCreateAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .models import Task
 from .serializers import TaskSerializer, TaskListSerializer
+
+from .fuzzer.fuzzer import launch_fuzzing
 
 class TaskList(ListCreateAPIView):
     """
@@ -20,6 +23,8 @@ class TaskList(ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+        print launch_fuzzing()
+
 
 class TaskDetail(RetrieveAPIView):
     """
@@ -28,4 +33,3 @@ class TaskDetail(RetrieveAPIView):
     permission_classes = (IsAuthenticated,)
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
-

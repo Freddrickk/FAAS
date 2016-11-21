@@ -5,9 +5,7 @@ import signal
 
 from kitty.data.report import Report
 from kitty.targets import ServerTarget
-import ptrace.debugger
 from ptrace_types import *
-from ptrace.debugger.process_event import ProcessExit
 
 
 SIGNALS = dict((k, v) for v, k in reversed(sorted(signal.__dict__.items())) if v.startswith('SIG') and not v.startswith('SIG_'))
@@ -65,6 +63,10 @@ class LinuxProcessStdinTarget(ServerTarget):
                 print 'CRASH'
                 libc.ptrace(PTRACE_DETACH, self.pid, None, None)
                 os.waitpid(self.pid, 0)
+                report = Report('CRASH')
+
+                report.failed(SIGNALS[os.WSTOPSIG(status)])
+                self.report.add('fail', report)
                 return
             else:
                 libc.ptrace(PTRACE_CONT, self.pid, None, None)

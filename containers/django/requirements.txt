@@ -5,3 +5,4 @@ djangorestframework
 django-rest-auth
 drfdocs
 Markdown
+kittyfuzzer
