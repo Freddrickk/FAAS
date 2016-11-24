@@ -26,4 +26,4 @@ class CrashReport(models.Model):
 
     @classmethod
     def create(cls, task, signal, payload):
-        return cls(owner=task, signal=signal, payload=payload)
+        return cls(task=task, signal=signal, payload=payload)

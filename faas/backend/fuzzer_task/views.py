@@ -1,11 +1,14 @@
+import base64
 import os
+import stat
+import tempfile
+
 from rest_framework.generics import ListCreateAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .models import Task, CrashReport
 from .serializers import TaskSerializer, TaskListSerializer
-
 from .fuzzer.fuzzer import launch_fuzzing
 
 
@@ -24,13 +27,22 @@ class TaskList(ListCreateAPIView):
 
     def perform_create(self, serializer):
         task = serializer.save(owner=self.request.user)
-        #print self.request.data['name']
 
-        for signal, payload in launch_fuzzing('test', '/code/fuzzer_task/fuzzer/examples/vuln', []):
+        bin_path = self._create_bin_file(task.b64_binary_file)
+
+        for signal, payload in launch_fuzzing(task.name, bin_path, []):
             cr = CrashReport.create(task, signal, payload)
             cr.save()
 
+        os.remove(bin_path)
 
+    def _create_bin_file(self, b64_binary_file):
+        fd, path = tempfile.mkstemp()
+        os.write(fd, base64.b64decode(b64_binary_file))
+        os.close(fd)
+        os.chmod(path, stat.S_IEXEC)
+
+        return path
 
 
 class TaskDetail(RetrieveAPIView):
