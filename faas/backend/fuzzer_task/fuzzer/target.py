@@ -31,12 +31,17 @@ class LinuxProcessStdinTarget(ServerTarget):
     def pre_test(self, test_number):
         super(LinuxProcessStdinTarget, self).pre_test(test_number)
 
+        pipe_r, self.pipe_w = os.pipe()
         self.pid = os.fork()
 
         if self.pid == 0:
-            self.is_active = True
+            os.dup2(pipe_r, 0)
+            os.close(self.pipe_w)
             libc.ptrace(PTRACE_TRACEME, ctypes.c_uint32(0), None, None)
             os.execve(self.program, self.args, {})
+        else:
+            os.dup2(self.pipe_w, 0)
+            os.close(pipe_r)
 
     def post_test(self, test_number):
         pass
@@ -44,8 +49,7 @@ class LinuxProcessStdinTarget(ServerTarget):
     def _send_to_target(self, payload):
         pid, status = os.waitpid(self.pid, 0)
 
-        with open('/proc/{}/fd/0'.format(self.pid), 'w') as f:
-            f.write(payload + '\n')
+        os.write(self.pipe_w, payload + '\n')
 
         while True:
             if os.WIFEXITED(status):
