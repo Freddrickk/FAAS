@@ -8,7 +8,7 @@ class TaskSerializer(ModelSerializer):
 
     class Meta:
         model = Task
-        fields = ('name', 'owner', 'description', 'b64_binary_file')
+        fields = ('name', 'owner', 'description', 'b64_binary_file', 'template')
 
 class TaskListSerializer(ModelSerializer):
 

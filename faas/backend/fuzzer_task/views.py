@@ -3,6 +3,7 @@ import os
 import stat
 import tempfile
 
+from rest_framework.exceptions import ParseError
 from rest_framework.generics import ListCreateAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -10,6 +11,7 @@ from rest_framework.response import Response
 from .models import Task, CrashReport
 from .serializers import TaskSerializer, TaskListSerializer
 from .fuzzer.fuzzer import launch_fuzzing
+from .fuzzer.exceptions.template import InvalidTemplate
 
 
 class TaskList(ListCreateAPIView):
@@ -30,7 +32,14 @@ class TaskList(ListCreateAPIView):
 
         bin_path = self._create_bin_file(task.b64_binary_file)
 
-        for signal, payload in launch_fuzzing(task.name, bin_path, []):
+        # If the template is invalid, remove the task from the database
+        try:
+            crash_reports = launch_fuzzing(task.name, bin_path, [], task.template.encode('latin-1'))
+        except InvalidTemplate as e:
+            task.delete()
+            raise ParseError('Invalid template')
+
+        for signal, payload in crash_reports:
             cr = CrashReport.create(task, signal, payload)
             cr.save()
 
