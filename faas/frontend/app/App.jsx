@@ -10,6 +10,7 @@ import Cookies from 'js-cookie';
 import MainUI from './components/MainUI.jsx';
 import reducers from './reducers/reducers';
 import { fetchUsername, saveToken } from './actions/User';
+import { fetchTaskList } from './actions/TasksList';
 
 // creating store with reducers
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -26,6 +27,9 @@ if (typeof token != 'undefined') {
   store.dispatch(saveToken(token));
   store.dispatch(fetchUsername(token));
 }
+
+// list population
+store.dispatch(fetchTaskList(token));
 
 
 

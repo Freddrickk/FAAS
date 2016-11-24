@@ -1,4 +1,5 @@
 import { setUploadTaskErrors } from './FormsErrors'
+import { fetchTaskList } from './TasksList'
 
 export const SET_BINARY_FILE = 'CHANGE_BINARY_FILE';
 export const CLEAR_BINARY_FILE = 'CLEAR_BINARY_FILE';
@@ -22,9 +23,10 @@ export function clearBinaryName () {
   return {type: CLEAR_BINARY_Name};
 }
 
-function handleJSON(json, dispatch) {
+function handleJSON(json, dispatch, token) {
   if (json.hasOwnProperty('owner')) {
     console.log("Upload success !!! TODO")
+    dispatch(fetchTaskList(token))
   } else {
     dispatch(setUploadTaskErrors(json))
   }
@@ -43,8 +45,6 @@ export function uploadBinary(obj, token) {
      method: 'post',
      body: JSON.stringify(obj)})
      .then(response => response.json())
-     .then(json => handleJSON(json, dispatch))
+     .then(json => handleJSON(json, dispatch, token))
  }
 }
-
-

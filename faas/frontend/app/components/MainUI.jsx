@@ -6,7 +6,7 @@ import ApplicationBar from './ApplicationBar.jsx';
 import AuthModal from './AuthModal.jsx';
 import { connect } from 'react-redux';
 
-import FuzzingTaskList from './FuzzingTaskList.jsx';
+import TaskList from './TaskList.jsx';
 import CrashReportList from './CrashReportList.jsx';
 
 const paperStyle = {
@@ -39,11 +39,11 @@ class MainUI extends Component {
 		  );
 		} else if(this.state.pageToDisplay == "fuzzingTaskList"){
 		  return(
-			<FuzzingTaskList />
+			  <TaskList />
 		  );
 		} else if(this.state.pageToDisplay == "crashReportList"){
 		  return(
-			<CrashReportList />
+			  <CrashReportList />
 		  );
 		}
 	}
