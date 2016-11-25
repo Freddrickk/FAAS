@@ -49,44 +49,33 @@ const tableData = [
 
 class CrashReportList extends Component {
 
-  constructor() {
-    super();
-
-	this.state={
-		displaySelectAll: false,
-		displayRowCheckbox: false,
-	}
-  }
-
-
-
   render() {
     return (
       <div>
         <Paper style={paperStyle}>
-		  <Table>
-			<TableHeader displaySelectAll={this.state.displaySelectAll}>
-			  <TableRow>
-				<TableHeaderColumn colSpan="3" tooltip="Crash Report List" style={{textAlign: 'center'}}>
-					Crash Report List
-				</TableHeaderColumn>
-			  </TableRow>
-			  <TableRow>
-				<TableHeaderColumn>Name</TableHeaderColumn>
-				<TableHeaderColumn>Owner</TableHeaderColumn>
-				<TableHeaderColumn>Description</TableHeaderColumn>
-			  </TableRow>
-			</TableHeader>
-			<TableBody displayRowCheckbox={this.state.displayRowCheckbox}>
-		        {tableData.map( (row, index) => (
-		          <TableRow key={index} selected={row.selected}>
-		            <TableRowColumn>{row.name}</TableRowColumn>
-		            <TableRowColumn>{row.owner}</TableRowColumn>
-		            <TableRowColumn>{row.description}</TableRowColumn>
-		          </TableRow>
+          <Table>
+            <TableHeader displaySelectAll={false}>
+              <TableRow>
+                <TableHeaderColumn colSpan="3" tooltip="Crash Report List" style={{textAlign: 'center'}}>
+                  Crash Report List
+                </TableHeaderColumn>
+              </TableRow>
+              <TableRow>
+                <TableHeaderColumn>Name</TableHeaderColumn>
+                <TableHeaderColumn>Owner</TableHeaderColumn>
+                <TableHeaderColumn>Description</TableHeaderColumn>
+              </TableRow>
+            </TableHeader>
+            <TableBody displayRowCheckbox={false}>
+              {[].map( (row, index) => (
+                <TableRow key={index} selected={row.selected}>
+                  <TableRowColumn>{row.name}</TableRowColumn>
+                  <TableRowColumn>{row.owner}</TableRowColumn>
+                  <TableRowColumn>{row.description}</TableRowColumn>
+                </TableRow>
 		          ))}
-			</TableBody>
-		  </Table>
+            </TableBody>
+          </Table>
 
 
         </Paper>

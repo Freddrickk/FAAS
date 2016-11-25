@@ -3,13 +3,25 @@ import os
 import stat
 import tempfile
 
-from rest_framework.generics import ListCreateAPIView, RetrieveAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .models import Task, CrashReport
-from .serializers import TaskSerializer, TaskListSerializer
+from .serializers import TaskSerializer, TaskListSerializer, CrashReportListSerializer
 from .fuzzer.fuzzer import launch_fuzzing
+
+class CrashReportList(ListAPIView):
+    """
+    List all the crash reports done by the fuzzer
+    """
+    permission_classes = (IsAuthenticated,)
+    queryset = CrashReport.objects.all()
+    serializer_class = CrashReportListSerializer
+
+    def list(self, request):
+        serializer = self.serializer_class(self.get_queryset(), many=True)
+        return Response(serializer.data)
 
 
 class TaskList(ListCreateAPIView):

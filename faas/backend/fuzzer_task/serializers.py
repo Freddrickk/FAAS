@@ -1,6 +1,15 @@
 from rest_framework.serializers import ModelSerializer, ReadOnlyField
 
-from .models import Task
+from .models import Task, CrashReport
+
+class CrashReportListSerializer(ModelSerializer):
+
+    owner = ReadOnlyField(source='task.owner.username')
+    task_name = ReadOnlyField(source='task.name')
+
+    class Meta:
+        model = CrashReport
+        fields = ('id', 'task_name', 'owner', 'signal')
 
 class TaskSerializer(ModelSerializer):
 

@@ -22,7 +22,7 @@ class CrashReport(models.Model):
     signal = models.CharField(max_length=40, null=False, blank=False)
 
     def __unicode__(self):
-        return '<CrashReport: %s : %s>' % (self.owner.name, self.signal)
+        return '<CrashReport: %s : %s>' % (self.task.owner.username, self.signal)
 
     @classmethod
     def create(cls, task, signal, payload):
