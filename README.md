@@ -25,6 +25,13 @@ Start the stack
 $ docker-compose up
 ```
 
+Please note for the next instructions that if you run docker on another os than Linux, use the VM IP address instead of localhost.
+
+The web app now run on
+```
+localhost:8080/
+```
+
 Django now listens on port 8000 or on the /api url
 
 ```
