@@ -1,15 +1,20 @@
 import base64
-import time
+import stat
+import subprocess
 from multiprocessing import Process, Manager
 
+from elftools.elf.elffile import ELFFile
+from elftools.common.exceptions import ELFError, ELFParseError, ELFRelocationError
 from kitty.fuzzers import ServerFuzzer
 from kitty.interfaces import WebInterface
 from kitty.model import *
 
 from controller import LinuxProcessStdinController
 from target import LinuxProcessStdinTarget
-from exceptions.template import InvalidTemplate
+from exceptions.exceptions import InvalidTemplate, InvalidExecutable
 
+
+READELF = 'readelf'
 
 def launch_in_main_thread(report, name, path, args):
     _launch_fuzzing(report, name, path, args)
@@ -41,12 +46,33 @@ def _launch_fuzzing(report, name, path, args, template):
         report.append((signal, payload))
 
 
+def _is_valid_ELF(path):
+    if os.path.isfile(path):
+        if bool(os.stat(path).st_mode & stat.S_IEXEC):
+            with open(path, 'rb') as f:
+                # Make sure this file is an ELF
+                ELFFile(f)
+                return True
+    return False
+
+
 def launch_fuzzing(name, path, args, template):
     manager = Manager()
     report = manager.list()
 
     if type(template) is not str:
         raise InvalidTemplate('Template must be a string')
+
+    err_msg = None
+    valid_executable = False
+    try:
+        valid_executable = _is_valid_ELF(path)
+    except (ELFError, ELFParseError, ELFRelocationError) as e:
+        err_msg = e.message
+
+    if not valid_executable:
+        err_msg = 'File doesn\'t exist' if err_msg is None else 'Invalid ELF : {}'.format(err_msg)
+        raise InvalidExecutable(err_msg)
 
     template_ = Template(name='Fuzzing input', fields=[
         String(template, name='user'),

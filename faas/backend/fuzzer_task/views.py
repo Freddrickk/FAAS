@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from .models import Task, CrashReport
 from .serializers import TaskSerializer, TaskListSerializer, CrashReportListSerializer
 from .fuzzer.fuzzer import launch_fuzzing
-from .fuzzer.exceptions.template import InvalidTemplate
+from .fuzzer.exceptions.exceptions import InvalidTemplate, InvalidExecutable
 
 class CrashReportList(ListAPIView):
     """
@@ -47,9 +47,9 @@ class TaskList(ListCreateAPIView):
         # If the template is invalid, remove the task from the database
         try:
             crash_reports = launch_fuzzing(task.name, bin_path, [], task.template.encode('latin-1'))
-        except InvalidTemplate:
+        except (InvalidTemplate, InvalidExecutable) as e:
             task.delete()
-            raise ParseError('Invalid template')
+            raise ParseError(e.message)
 
         for signal, payload in crash_reports:
             cr = CrashReport.create(task, signal, payload)

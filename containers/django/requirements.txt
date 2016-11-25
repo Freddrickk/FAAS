@@ -6,3 +6,4 @@ django-rest-auth
 drfdocs
 Markdown
 kittyfuzzer
+pyelftools
