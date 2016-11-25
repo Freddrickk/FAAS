@@ -10,6 +10,7 @@ class Task(models.Model):
     name = models.CharField(max_length=100, null=False, blank=False, unique=True)
     description = models.CharField(max_length = 255, null=False, blank=True)
     b64_binary_file = models.TextField(null=False, blank=False)
+    template = models.TextField(null=False, blank=False)
 
     def __unicode__(self):
         return '<Task: %s>' % self.name

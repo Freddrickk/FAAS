@@ -8,27 +8,20 @@ from kitty.model import *
 
 from controller import LinuxProcessStdinController
 from target import LinuxProcessStdinTarget
+from exceptions.template import InvalidTemplate
 
 
 def launch_in_main_thread(report, name, path, args):
     _launch_fuzzing(report, name, path, args)
 
 
-def _launch_fuzzing(report, name, path, args):
-    email_input = Template(name='Email', fields=[
-        String('fred', name='user'),
-        Delimiter('@', name='at'),
-        String('gmail', name='domain'),
-        Delimiter('.', name='dot'),
-        String('com', name='tld')
-    ])
-
+def _launch_fuzzing(report, name, path, args, template):
     fuzzer = ServerFuzzer()
     interface = WebInterface(host='127.0.0.1', port=26001)
     fuzzer.set_interface(interface)
 
     model = GraphModel()
-    model.connect(email_input)
+    model.connect(template)
 
     controller = LinuxProcessStdinController('test_ctrl')
     target = LinuxProcessStdinTarget(name, path, args)
@@ -48,10 +41,18 @@ def _launch_fuzzing(report, name, path, args):
         report.append((signal, payload))
 
 
-def launch_fuzzing(name, path, args):
+def launch_fuzzing(name, path, args, template):
     manager = Manager()
     report = manager.list()
-    p = Process(target=_launch_fuzzing, args=(report, name, path, args))
+
+    if type(template) is not str:
+        raise InvalidTemplate('Template must be a string')
+
+    template_ = Template(name='Fuzzing input', fields=[
+        String(template, name='user'),
+    ])
+
+    p = Process(target=_launch_fuzzing, args=(report, name, path, args, template_))
     p.start()
     p.join()
 
