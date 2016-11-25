@@ -46,7 +46,7 @@ class TaskList(ListCreateAPIView):
 
         # If the template is invalid, remove the task from the database
         try:
-            crash_reports = launch_fuzzing(task.name, bin_path, [], task.template.encode('latin-1'))
+            crash_reports = launch_fuzzing(task.name, bin_path, [], task.template.encode('utf-8'))
         except (InvalidTemplate, InvalidExecutable) as e:
             task.delete()
             raise ParseError(e.message)
