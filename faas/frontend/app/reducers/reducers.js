@@ -5,6 +5,7 @@ import UI from './UI'
 import Task from './Task'
 import User from './User'
 import TasksList from './TasksList'
+import ReportsList from './ReportsList'
 
 import FormsErrors from './FormsErrors'
 
@@ -13,6 +14,7 @@ const reducers = combineReducers({
   User,
   Task,
   TasksList,
+  ReportsList,
   FormsErrors,
   form: formReducer
 });

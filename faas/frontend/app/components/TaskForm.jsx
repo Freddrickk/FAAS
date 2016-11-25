@@ -30,7 +30,8 @@ class TaskDescriptionForm extends Component {
           multiLine={true} errorText={this.props.errorsFunc('name')}/>
         <Field name="description" component={TextField} hintText="Description"
           multiLine={true} errorText={this.props.errorsFunc('description')}  />
-
+        <Field name="template" component={TextField} hintText="Template"
+          multiLine={true} errorText={this.props.errorsFunc('template')}  />
       </form>
     )
   }
@@ -95,8 +96,6 @@ class TaskForm extends Component {
     });
     let token = this.props.getToken()
     this.props.upload(request, token)
-
-
   }
 
   render() {

@@ -11,6 +11,7 @@ import MainUI from './components/MainUI.jsx';
 import reducers from './reducers/reducers';
 import { fetchUsername, saveToken } from './actions/User';
 import { fetchTaskList } from './actions/TasksList';
+import { fetchReportsList } from './actions/ReportsList';
 
 // creating store with reducers
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -30,7 +31,7 @@ if (typeof token != 'undefined') {
 
 // list population
 store.dispatch(fetchTaskList(token));
-
+store.dispatch(fetchReportsList(token));
 
 
 class App extends React.Component {
