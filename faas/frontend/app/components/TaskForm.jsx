@@ -118,9 +118,10 @@ class TaskForm extends Component {
           <RaisedButton label={this.props.getBinaryName()} style={buttonStyle} />
         </FileReaderInput>
         <p style={{color: "rgb(244, 67, 54)"}} >{this.props.getErrorMessage('b64_binary_file')}</p>
-        <RaisedButton onClick={this.onSubmit} primary={true} label="upload"
+        <RaisedButton onClick={this.onSubmit} primary={true} label="Start fuzzing"
           style={buttonStyle} disabled={this.props.buttonIsBlocked() || this.props.isUploading()} />
         {this.showProgress()}
+        <p style={{color: "rgb(244, 67, 54)"}} >{this.props.getErrorMessage('detail')}</p>
       </Paper>
     );
   }
