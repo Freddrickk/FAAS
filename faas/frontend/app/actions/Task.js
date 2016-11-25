@@ -1,4 +1,4 @@
-import { setUploadTaskErrors } from './FormsErrors'
+import { setUploadTaskErrors, clearUploadTaskErrors } from './FormsErrors'
 import { fetchTaskList } from './TasksList'
 import { fetchReportsList } from './ReportsList'
 import { startBinUpload, stopBinUpload } from './UI'
@@ -44,6 +44,7 @@ export function uploadBinary(obj, token) {
    });
 
    dispatch(startBinUpload());
+   dispatch(clearUploadTaskErrors());
 
    fetch('/api/task/', {
      headers: headers,
