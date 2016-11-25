@@ -35,7 +35,7 @@ function handleJSON(json, dispatch, token) {
   dispatch(stopBinUpload())
 }
 
-export function uploadBinary(obj, token) {
+export function createAndStartTask(obj, token) {
  return dispatch => {
 
    let headers = new Headers({

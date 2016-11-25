@@ -7,7 +7,7 @@ import { TextField } from 'redux-form-material-ui'
 import RaisedButton from 'material-ui/RaisedButton';
 import FileReaderInput from 'react-file-reader-input';
 
-import { setBinaryFile, setBinaryName, uploadBinary } from '../actions/Task'
+import { setBinaryFile, setBinaryName, createAndStartTask } from '../actions/Task'
 
 
 const paperStyle = {
@@ -82,7 +82,7 @@ class TaskForm extends Component {
         dispatch(setBinaryFile(b64File));
         dispatch(setBinaryName(bName));
       },
-      upload: (b64, token) => dispatch(uploadBinary(b64, token))
+      upload: (b64, token) => dispatch(createAndStartTask(b64, token))
     }
   }
 
