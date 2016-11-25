@@ -2,6 +2,8 @@ export const TOGGLE_LOGIN_MODAL = 'TOGGLE_LOGIN_MODAL';
 export const TOGGLE_LOGIN_FETCHING = 'TOGGLE_LOGIN_FETCHING';
 export const SWITCH_BETWEEN_LOGIN_SIGNUP = 'SWITCH_BETWEEN_LOGIN_SIGNUP';
 
+export const TOGGLE_BIN_UPLOAD = 'TOGGLE_BIN_UPLOAD';
+
 export const LOGIN_FORM = 'LOGIN';
 export const SIGNUP_FORM = 'SIGNUP';
 
@@ -19,6 +21,14 @@ export function startLoginFetching() {
 
 export function stopLoginFetching() {
   return {type: TOGGLE_LOGIN_FETCHING, isFetching: false};
+}
+
+export function startBinUpload() {
+  return {type: TOGGLE_BIN_UPLOAD, isFetching: true}
+}
+
+export function stopBinUpload() {
+  return {type: TOGGLE_BIN_UPLOAD, isFetching: false}
 }
 
 export function activeSignup() {

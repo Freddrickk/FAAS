@@ -1,5 +1,7 @@
 import { setUploadTaskErrors } from './FormsErrors'
 import { fetchTaskList } from './TasksList'
+import { fetchReportsList } from './ReportsList'
+import { startBinUpload, stopBinUpload } from './UI'
 
 export const SET_BINARY_FILE = 'CHANGE_BINARY_FILE';
 export const CLEAR_BINARY_FILE = 'CLEAR_BINARY_FILE';
@@ -25,11 +27,12 @@ export function clearBinaryName () {
 
 function handleJSON(json, dispatch, token) {
   if (json.hasOwnProperty('owner')) {
-    console.log("Upload success !!! TODO")
     dispatch(fetchTaskList(token))
+    dispatch(fetchReportsList(token))
   } else {
     dispatch(setUploadTaskErrors(json))
   }
+  dispatch(stopBinUpload())
 }
 
 export function uploadBinary(obj, token) {
@@ -39,6 +42,8 @@ export function uploadBinary(obj, token) {
      'Content-Type': 'application/json',
      'Authorization': 'Token ' + token
    });
+
+   dispatch(startBinUpload());
 
    fetch('/api/task/', {
      headers: headers,

@@ -1,10 +1,11 @@
-import { TOGGLE_LOGIN_MODAL, TOGGLE_LOGIN_FETCHING,
+import { TOGGLE_LOGIN_MODAL, TOGGLE_LOGIN_FETCHING, TOGGLE_BIN_UPLOAD,
          SWITCH_BETWEEN_LOGIN_SIGNUP,
          LOGIN_FORM, SIGNUP_FORM} from "../actions/UI"
 
 const initialState = {
   loginModalIsOpen: false,
   loginIsFetching: false,
+  binIsUploading: false,
   activeAuthForm: LOGIN_FORM
 }
 
@@ -25,6 +26,9 @@ const UI = (state = initialState, action) => {
       return Object.assign({}, state, {
         activeAuthForm: action.target
       });
+
+    case TOGGLE_BIN_UPLOAD:
+      return Object.assign({}, state, {binIsUploading: action.isFetching})
 
     default:
       return state;

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Paper from 'material-ui/Paper';
+import CircularProgress from 'material-ui/CircularProgress';
 import { reduxForm, Field } from 'redux-form'
 import { connect } from 'react-redux'
 import { TextField } from 'redux-form-material-ui'
@@ -48,6 +49,7 @@ class TaskForm extends Component {
     super();
     this.handleChange = this.handleChange.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
+    this.showProgress = this.showProgress.bind(this)
   }
 
   static mapStateToProps = (state) => {
@@ -61,6 +63,7 @@ class TaskForm extends Component {
       getFormData: () => state.form.taskDescriptionForm.values,
       getB64: () => state.Task.b64_binary_file,
       getToken: () => state.User.credentials.token,
+      isUploading: () => state.UI.binIsUploading,
       buttonIsBlocked: () => {
         return typeof state.form.taskDescriptionForm === 'undefined' ||
                typeof state.form.taskDescriptionForm.values === 'undefined';
@@ -81,6 +84,13 @@ class TaskForm extends Component {
       },
       upload: (b64, token) => dispatch(uploadBinary(b64, token))
     }
+  }
+
+  showProgress = () => {
+    if (this.props.isUploading())
+      return <CircularProgress size={25} thickness={2} />;
+    else
+      return "";
   }
 
   handleChange = (e, results) => {
@@ -109,7 +119,8 @@ class TaskForm extends Component {
         </FileReaderInput>
         <p style={{color: "rgb(244, 67, 54)"}} >{this.props.getErrorMessage('b64_binary_file')}</p>
         <RaisedButton onClick={this.onSubmit} primary={true} label="upload"
-          style={buttonStyle} disabled={this.props.buttonIsBlocked()} />
+          style={buttonStyle} disabled={this.props.buttonIsBlocked() || this.props.isUploading()} />
+        {this.showProgress()}
       </Paper>
     );
   }
