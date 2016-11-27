@@ -8,10 +8,10 @@ from rest_framework.exceptions import ParseError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Task, CrashReport
+from .models import Task, CrashReport, Registers
 from .serializers import TaskSerializer, TaskListSerializer, CrashReportListSerializer
 from .fuzzer.fuzzer import launch_fuzzing
-from .fuzzer.exceptions.exceptions import InvalidTemplate, InvalidExecutable
+from .fuzzer.fuzzer_exceptions.exceptions import InvalidTemplate, InvalidExecutable
 
 class CrashReportList(ListAPIView):
     """
@@ -51,9 +51,11 @@ class TaskList(ListCreateAPIView):
             task.delete()
             raise ParseError(e.message)
 
-        for signal, payload in crash_reports:
+        for signal, payload, registers in crash_reports:
             cr = CrashReport.create(task, signal, payload)
             cr.save()
+            regs = Registers.create(registers, cr)
+            regs.save()
 
         os.remove(bin_path)
 

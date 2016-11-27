@@ -38,8 +38,8 @@ PTRACE_SECCOMP_GET_FILTER = c_int32(0x420c)
 
 pid_t = c_int32
 
-class UserRegsStruct32(Structure):
-    """Processor context for x86"""
+class UserRegsStruct64(Structure):
+    """Processor context for x86_64"""
     _fields_ = [
         ('r15', c_ulonglong),
         ('r14', c_ulonglong),
@@ -71,8 +71,8 @@ class UserRegsStruct32(Structure):
     ]
 
 
-class UserRegsStruct64(Structure):
-    """Processor context for x86_64"""
+class UserRegsStruct32(Structure):
+    """Processor context for x86"""
     _fields_ = [
         ('ebx', c_long),
         ('ecx', c_long),

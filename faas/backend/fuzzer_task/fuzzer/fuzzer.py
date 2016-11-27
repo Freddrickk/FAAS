@@ -11,13 +11,9 @@ from kitty.model import *
 
 from controller import LinuxProcessStdinController
 from target import LinuxProcessStdinTarget
-from exceptions.exceptions import InvalidTemplate, InvalidExecutable
-
+from fuzzer_exceptions.exceptions import InvalidTemplate, InvalidExecutable
 
 READELF = 'readelf'
-
-def launch_in_main_thread(report, name, path, args):
-    _launch_fuzzing(report, name, path, args)
 
 
 def _launch_fuzzing(report, name, path, args, template):
@@ -40,10 +36,18 @@ def _launch_fuzzing(report, name, path, args, template):
     ids = dm.get_report_test_ids()
 
     for id in ids:
-        crash_report = dm.get_report_by_id(id).to_dict()['crash']
+        crash_report = dm.get_report_by_id(id).to_dict()
+
         signal = base64.b64decode(crash_report['signal'])
-        payload = crash_report['payload']
-        report.append((signal, payload))
+        payload = crash_report['payload']['raw']
+        reg_report = crash_report['registers']
+        registers = {}
+
+        for reg in reg_report:
+            if reg not in ["name", "status", "sub_reports"]:
+                registers[reg] = reg_report[reg]
+
+        report.append((signal, payload, registers))
 
 
 def _is_valid_ELF(path):
@@ -56,7 +60,7 @@ def _is_valid_ELF(path):
     return False
 
 
-def launch_fuzzing(name, path, args, template):
+def launch_fuzzing(name, path, args, template, launch_proc=True):
     manager = Manager()
     report = manager.list()
 
@@ -78,12 +82,15 @@ def launch_fuzzing(name, path, args, template):
         String(template, name='user'),
     ])
 
-    p = Process(target=_launch_fuzzing, args=(report, name, path, args, template_))
-    p.start()
-    p.join()
+    if launch_proc:
+        p = Process(target=_launch_fuzzing, args=(report, name, path, args, template_))
+        p.start()
+        p.join()
+    else:
+        _launch_fuzzing(report, name, path, args, template_)
 
     return report
 
 
 if __name__ == '__main__':
-    launch_in_main_thread([], 'test', 'examples/vuln', [])
+    print launch_fuzzing('test', 'examples/vuln', [], "AAAAAAA", launch_proc=False)

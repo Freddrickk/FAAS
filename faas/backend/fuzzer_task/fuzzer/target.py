@@ -64,20 +64,48 @@ class LinuxProcessStdinTarget(ServerTarget):
             sig = os.WSTOPSIG(status)
 
             if sig == signal.SIGBUS or sig == signal.SIGSEGV or sig == signal.SIGSYS or sig == signal.SIGILL:
-                print 'CRASH'
+                print "#---- CRASH ----#"
+                regs_report = self._get_registers_report()
+                regs_report.failed()
+                self.report.add('signal', SIGNALS[os.WSTOPSIG(status)])
+                self.report.add('registers', regs_report)
+
                 libc.ptrace(PTRACE_DETACH, self.pid, None, None)
                 os.waitpid(self.pid, 0)
-                report = Report('CRASH')
-
-                report.add('payload', payload)
-                report.add('signal', SIGNALS[os.WSTOPSIG(status)])
-                report.failed()
-                self.report.add('crash', report)
                 return
             else:
                 libc.ptrace(PTRACE_CONT, self.pid, None, None)
 
             pid, status = os.waitpid(self.pid, 0)
+
+    def _get_registers_report(self):
+        regs = self._get_registers()
+        report = Report('Registers')
+        report.add('rax', regs.rax)
+        report.add('rbx', regs.rbx)
+        report.add('rcx', regs.rcx)
+        report.add('rdx', regs.rdx)
+        report.add('rsi', regs.rsi)
+        report.add('rdi', regs.rdi)
+        report.add('r8', regs.r8)
+        report.add('r9', regs.r9)
+        report.add('r10', regs.r10)
+        report.add('r11', regs.r11)
+        report.add('r12', regs.r12)
+        report.add('r13', regs.r13)
+        report.add('r14', regs.r14)
+        report.add('r15', regs.r15)
+        report.add('rbp', regs.rbp)
+        report.add('rsp', regs.rsp)
+        report.add('rip', regs.rip)
+
+        return report
+
+    def _get_registers(self):
+        regs = UserRegsStruct64()
+        libc.ptrace(PTRACE_GETREGS, self.pid, None, byref(regs))
+
+        return regs
 
     def _receive_from_target(self):
         pass
