@@ -3,27 +3,40 @@ import os
 import stat
 import tempfile
 
+
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+
 from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, ListAPIView
 from rest_framework.exceptions import ParseError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .models import Task, CrashReport, Registers
-from .serializers import TaskSerializer, TaskListSerializer, CrashReportListSerializer
+from .serializers import TaskSerializer, TaskListSerializer, CrashReportListSerializer, CrashReportSerializer
 from .fuzzer.fuzzer import launch_fuzzing
 from .fuzzer.fuzzer_exceptions.exceptions import InvalidTemplate, InvalidExecutable
 
-class CrashReportList(ListAPIView):
+
+class CrashReportList(ListCreateAPIView):
     """
     List all the crash reports done by the fuzzer
     """
     permission_classes = (IsAuthenticated,)
     queryset = CrashReport.objects.all()
-    serializer_class = CrashReportListSerializer
+    serializer_class = CrashReportSerializer
 
     def list(self, request):
-        serializer = self.serializer_class(self.get_queryset(), many=True)
+        serializer = CrashReportListSerializer(self.get_queryset(), many=True)
         return Response(serializer.data)
+
+    def perform_create(self, serializer):
+        print self.request.data
+        print "INTO PERFORM CREATE"
+
+        crash_report = serializer.save()
+        crash_report.save()
+
+        regs = Registers()
 
 
 class TaskList(ListCreateAPIView):
