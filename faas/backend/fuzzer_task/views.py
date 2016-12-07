@@ -2,19 +2,17 @@ import base64
 import os
 import stat
 import tempfile
+import subprocess
 
 
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-
-from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, ListAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveAPIView
 from rest_framework.exceptions import ParseError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .models import Task, CrashReport, Registers
 from .serializers import TaskSerializer, TaskListSerializer, CrashReportListSerializer, CrashReportSerializer, RegisterSerializer
-from .fuzzer.fuzzer import launch_fuzzing
-from .fuzzer.fuzzer_exceptions.exceptions import InvalidTemplate, InvalidExecutable
+from .fuzzer.fuzzer import is_valid_binary
 
 
 class CrashReportList(ListCreateAPIView):
@@ -48,20 +46,19 @@ class TaskList(ListCreateAPIView):
 
         bin_path = self._create_bin_file(task.b64_binary_file)
 
-        # If the template is invalid, remove the task from the database
-        try:
-            crash_reports = launch_fuzzing(task.name, bin_path, [], task.template.encode('utf-8'))
-        except (InvalidTemplate, InvalidExecutable) as e:
-            task.delete()
-            raise ParseError(e.message)
+        if not is_valid_binary(bin_path):
+            raise ParseError('Invalid binary file')
 
-        for signal, payload, registers in crash_reports:
-            cr = CrashReport.create(task, signal, payload)
-            cr.save()
-            regs = Registers.create(registers, cr)
-            regs.save()
+        args = list()
+        args.append('python fuzzer_task/fuzzer/fuzzer.py')
+        args.append('--binary {}'.format(bin_path))
+        args.append('--template {}'.format(task.template.encode('utf-8')))
+        args.append('--task-id {}'.format(task.pk))
+        args.append('--token {}'.format(self.request.auth.key))
+        args = [arg for s in args for arg in s.split(' ')]
 
-        os.remove(bin_path)
+        # Launch the fuzzing task in the background
+        subprocess.Popen(args)
 
     def _create_bin_file(self, b64_binary_file):
         fd, path = tempfile.mkstemp()

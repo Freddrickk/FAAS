@@ -31,7 +31,6 @@ class FAASReporterThread(Thread):
                 if id_ not in old_report_list:
                     old_report_list.append(id_)
                     report = self._format_report(dataman.get_report_by_id(id_).to_dict())
-                    pprint.pprint(report)
                     self._send_report(report)
 
             report_list = dataman.get_report_list()
@@ -46,7 +45,6 @@ class FAASReporterThread(Thread):
 
         for k, v in regs.items():
             regs[k] = base64.b64decode(v)
-            print(regs[k])
 
         report['task'] = self.task_id
         report['signal'] = base64.b64decode(data['signal'])
@@ -60,11 +58,10 @@ class FAASReporterThread(Thread):
         endpoint = '/api/report/'
 
         try:
-            r = self.session.post(url + endpoint, json=report, timeout=1)
+            r = self.session.post(url + endpoint, json=report, timeout=5)
             print(r.status_code)
-            print(r.text)
         except Exception as e:
-            print 'timeout'
+            print e.message
 
     def _init_session(self, token):
         '''
@@ -79,7 +76,7 @@ class FAASInterface(EmptyInterface):
     Interface for the Fuzzing-as-a-service (FAAS) project
     '''
 
-    def __init__(self, task_id, token, host='localhost', port=8080):
+    def __init__(self, task_id, token, host='localhost', port=8000):
         '''
         :param task_id: FAAS related Task id
         :param token: FAAS token

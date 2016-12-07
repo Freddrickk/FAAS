@@ -1,5 +1,6 @@
 from __future__ import print_function
 import argparse
+import os
 import stat
 import sys
 
@@ -30,6 +31,7 @@ def launch_fuzzing(name, path, args, template, token, report_id):
     fuzzer.start()
 
     interface.stop()
+    fuzzer.stop()
 
 
 def is_valid_binary(path):
@@ -48,19 +50,23 @@ def is_valid_binary(path):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Fuzzer for the FAAS project')
     parser.add_argument('--binary', '-b', required=True, help='The path of the binary to fuzz')
-    parser.add_argument('--argv', '-a', required=True, nargs='*', help='Arguments for the fuzzee binary')
+    parser.add_argument('--argv', '-a', required=False, nargs='*', help='Arguments for the fuzzee binary')
     parser.add_argument('--template', '-t', required=True, help='The fuzzing template')
     parser.add_argument('--token', '-k', required=True, help='FAAS token')
     parser.add_argument('--task-id', '-r', required=True, type=int, help='Id of the related Task')
+    # parser.add_argument('--port', '-p', required=False, type=int, help='REST API port')
+    # parser.add_argument('--host', '-h', required=False, help='REST API host')
+    # parser.add_argument('--uri', '-u', required=False, help='REST API uri')
 
     args = parser.parse_args()
 
     if not is_valid_binary(args.binary):
         print('Invalid binary file', file=sys.stderr)
-        os.exit(-1)
+        sys.exit(-1)
 
     template_ = Template(name='Fuzzing input', fields=[
         String(args.template, name='user'),
     ])
+    argv = [] if args.argv is None else args.argv
 
-    launch_fuzzing('Fuzzing Task', args.binary, args.argv, template_, args.token, args.task_id)
+    launch_fuzzing('Fuzzing Task', args.binary, argv, template_, args.token, args.task_id)
