@@ -12,7 +12,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .models import Task, CrashReport, Registers
-from .serializers import TaskSerializer, TaskListSerializer, CrashReportListSerializer, CrashReportSerializer
+from .serializers import TaskSerializer, TaskListSerializer, CrashReportListSerializer, CrashReportSerializer, RegisterSerializer
 from .fuzzer.fuzzer import launch_fuzzing
 from .fuzzer.fuzzer_exceptions.exceptions import InvalidTemplate, InvalidExecutable
 
@@ -28,15 +28,6 @@ class CrashReportList(ListCreateAPIView):
     def list(self, request):
         serializer = CrashReportListSerializer(self.get_queryset(), many=True)
         return Response(serializer.data)
-
-    def perform_create(self, serializer):
-        print self.request.data
-        print "INTO PERFORM CREATE"
-
-        crash_report = serializer.save()
-        crash_report.save()
-
-        regs = Registers()
 
 
 class TaskList(ListCreateAPIView):

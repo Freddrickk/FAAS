@@ -13,9 +13,9 @@ from interface import FAASInterface
 from target import LinuxProcessStdinTarget
 
 
-def launch_fuzzing(name, path, args, template, session_id, token, report_id):
+def launch_fuzzing(name, path, args, template, token, report_id):
     fuzzer = ServerFuzzer()
-    interface = FAASInterface(report_id, session_id, token)
+    interface = FAASInterface(report_id, token)
     fuzzer.set_interface(interface)
 
     model = GraphModel()
@@ -50,14 +50,10 @@ if __name__ == '__main__':
     parser.add_argument('--binary', '-b', required=True, help='The path of the binary to fuzz')
     parser.add_argument('--argv', '-a', required=True, nargs='*', help='Arguments for the fuzzee binary')
     parser.add_argument('--template', '-t', required=True, help='The fuzzing template')
-    parser.add_argument('--session', '-s', required=True, help='FAAS session_id value')
-    parser.add_argument('--token', '-k', required=True, help='FAAS token value')
-    parser.add_argument('--report-id', '-r', required=True, type=int, help='Crash report id')
+    parser.add_argument('--token', '-k', required=True, help='FAAS token')
+    parser.add_argument('--task-id', '-r', required=True, type=int, help='Id of the related Task')
 
     args = parser.parse_args()
-    print(args)
-    raw_input()
-
 
     if not is_valid_binary(args.binary):
         print('Invalid binary file', file=sys.stderr)
@@ -67,4 +63,4 @@ if __name__ == '__main__':
         String(args.template, name='user'),
     ])
 
-    launch_fuzzing('Fuzzing Task', args.binary, args.argv, template_, args.session, args.token, args.report_id)
+    launch_fuzzing('Fuzzing Task', args.binary, args.argv, template_, args.token, args.task_id)

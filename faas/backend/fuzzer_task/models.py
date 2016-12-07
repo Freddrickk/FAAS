@@ -56,9 +56,9 @@ class Registers(models.Model):
 
     @classmethod
     def create(cls, registers, crash_report):
-        return cls(rax="0x%x" % registers['rax'], rbx="0x%x" % registers['rbx'], rcx="0x%x" % registers['rcx'],
-                   rdx="0x%x" % registers['rdx'], rsi="0x%x" % registers['rsi'], rdi="0x%x" % registers['rdi'],
-                   r8="0x%x" % registers['r8'], r9="0x%x" % registers['r9'], r10="0x%x" % registers['r10'],
-                   r11="0x%x" % registers['r11'], r12="0x%x" % registers['r12'], r13="0x%x" % registers['r13'],
-                   r14="0x%x" % registers['r14'], r15="0x%x" % registers['r15'], rbp="0x%x" % registers['rbp'],
-                   rsp="0x%x" % registers['rsp'], rip="0x%x" % registers['rip'], crash_report=crash_report)
+        return cls(rax=registers['rax'], rbx=registers['rbx'], rcx=registers['rcx'],
+                   rdx=registers['rdx'], rsi=registers['rsi'], rdi=registers['rdi'],
+                   r8=registers['r8'], r9=registers['r9'], r10=registers['r10'],
+                   r11=registers['r11'], r12=registers['r12'], r13=registers['r13'],
+                   r14=registers['r14'], r15=registers['r15'], rbp=registers['rbp'],
+                   rsp=registers['rsp'], rip=registers['rip'], crash_report=crash_report)
