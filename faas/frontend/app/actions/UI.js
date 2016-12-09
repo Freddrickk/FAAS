@@ -1,4 +1,5 @@
 export const TOGGLE_LOGIN_MODAL = 'TOGGLE_LOGIN_MODAL';
+export const TOGGLE_TASK_MODAL = 'TOGGLE_TASK_MODAL';
 export const TOGGLE_LOGIN_FETCHING = 'TOGGLE_LOGIN_FETCHING';
 export const SWITCH_BETWEEN_LOGIN_SIGNUP = 'SWITCH_BETWEEN_LOGIN_SIGNUP';
 
@@ -13,6 +14,14 @@ export function openLoginModal() {
 
 export function closeLoginModal() {
   return {type: TOGGLE_LOGIN_MODAL, isOpen: false};
+}
+
+export function openTaskModal() {
+  return {type: TOGGLE_TASK_MODAL, isOpen: true};
+}
+
+export function closeTaskModal() {
+  return {type: TOGGLE_TASK_MODAL, isOpen: false};
 }
 
 export function startLoginFetching() {
@@ -38,3 +47,5 @@ export function activeSignup() {
 export function activeLogin() {
   return {type: SWITCH_BETWEEN_LOGIN_SIGNUP, target: LOGIN_FORM }
 }
+
+

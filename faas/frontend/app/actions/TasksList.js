@@ -1,6 +1,8 @@
 export const FETCH_FUZZING_TASKS = "FETCH_FUZZING_TASKS";
 export const UPDATE_TASK_LIST = "UPDATE_TASK_LIST";
-export const FETCH_FUZZING_TASKS_ERROR = "FETCH_FUZZING_TASKS_ERROR"
+export const FETCH_FUZZING_TASKS_ERROR = "FETCH_FUZZING_TASKS_ERROR";
+export const FETCH_FUZZING_DETAIL_TASK = "FETCH_FUZZING_DETAIL_TASK";
+export const UPDATE_FUZZING_DETAIL_TASK = "UPDATE_FUZZING_DETAIL_TASK";
 
 export const updateTaskList = (newTaskList) => {
   return {
@@ -9,8 +11,20 @@ export const updateTaskList = (newTaskList) => {
   }
 }
 
-const handleJSON = (json, dispatch) => {
+export const updateTaskDetail = (newTaskDetail) => {
+  return {
+    type: UPDATE_FUZZING_DETAIL_TASK,
+    newTaskDetail: newTaskDetail
+  }
+}
+
+const handleListJSON = (json, dispatch) => {
   dispatch(updateTaskList(json))
+}
+
+const handleDetailJSON = (json, dispatch) => {
+  console.log("HELLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+  dispatch(updateTaskDetail(json))
 }
 
 export function fetchTaskList(token) {
@@ -25,6 +39,21 @@ export function fetchTaskList(token) {
      headers: headers,
      method: 'get'})
      .then(response => response.json())
-     .then(json => handleJSON(json, dispatch))
+     .then(json => handleListJSON(json, dispatch))
+ }
+}
+
+ export function fetchTaskDetail(token, idTask) {
+  return dispatch => {
+    let headers = new Headers({
+     'Content-Type': 'application/json',
+     'Authorization': 'Token ' + token
+    });
+
+   fetch('/api/task/'+idTask+'/', {
+     headers: headers,
+     method: 'get'})
+     .then(response => response.json())
+     .then(json => handleDetailJSON(json, dispatch))
  }
 }
