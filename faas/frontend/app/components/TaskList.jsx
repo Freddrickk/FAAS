@@ -37,7 +37,6 @@ class TaskDialogModal extends React.Component {
 	renderTaskDetail(){
 		var currentTask = this.props.getCurrentTask();
 		if(currentTask){
-			console.log(currentTask);
 			return (<div>
 					NAME : {currentTask.name} <br/> <br/>
 					DESCRIPTION: {currentTask.description} <br/> <br/>
@@ -60,7 +59,7 @@ class TaskDialogModal extends React.Component {
     return (
       <div>
         <Dialog
-          title="Detail task"
+          title="Task Details"
           actions={actions}
           modal={true}
           open={this.props.modalIsOpen()}

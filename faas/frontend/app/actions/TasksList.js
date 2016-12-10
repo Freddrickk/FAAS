@@ -23,7 +23,6 @@ const handleListJSON = (json, dispatch) => {
 }
 
 const handleDetailJSON = (json, dispatch) => {
-  console.log("HELLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
   dispatch(updateTaskDetail(json))
 }
 

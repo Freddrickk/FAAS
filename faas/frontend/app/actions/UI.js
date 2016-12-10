@@ -1,5 +1,6 @@
 export const TOGGLE_LOGIN_MODAL = 'TOGGLE_LOGIN_MODAL';
 export const TOGGLE_TASK_MODAL = 'TOGGLE_TASK_MODAL';
+export const TOGGLE_CRASHREPORT_MODAL = 'TOGGLE_CRASHREPORT_MODAL';
 export const TOGGLE_LOGIN_FETCHING = 'TOGGLE_LOGIN_FETCHING';
 export const SWITCH_BETWEEN_LOGIN_SIGNUP = 'SWITCH_BETWEEN_LOGIN_SIGNUP';
 
@@ -23,6 +24,15 @@ export function openTaskModal() {
 export function closeTaskModal() {
   return {type: TOGGLE_TASK_MODAL, isOpen: false};
 }
+
+export function openCrashReportModal() {
+  return {type: TOGGLE_CRASHREPORT_MODAL, isOpen: true};
+}
+
+export function closeCrashReportModal() {
+  return {type: TOGGLE_CRASHREPORT_MODAL, isOpen: false};
+}
+
 
 export function startLoginFetching() {
   return {type: TOGGLE_LOGIN_FETCHING, isFetching: true};
