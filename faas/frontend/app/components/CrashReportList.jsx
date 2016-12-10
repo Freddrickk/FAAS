@@ -38,7 +38,10 @@ class CrashReportDialogModal extends React.Component {
     var currentCrashReport = this.props.getCurrentCrashReport();
     if(currentCrashReport){
       return (<div>
-          NAME :
+          PAYLOAD : {currentCrashReport.payload} <br/> <br/>
+          SIGNAL : {currentCrashReport.signal} <br/> <br/>
+          TASK : {currentCrashReport.task} <br/> <br/>
+          REGISTERS : {currentCrashReport.registers} <br/> <br/>
           </div>);
     }
     return "";
@@ -95,10 +98,8 @@ class CrashReportList extends Component {
 
   handleOnClickRow = (indexRow) => {
     var oCrashReport = this.props.getCrashReportInformation(indexRow);
-    console.log(oCrashReport);
     if(oCrashReport){
       var idCrashReport = oCrashReport.id;
-      console.log(idCrashReport);  
       this.props.fetchCrashReportDetail(this.props.getToken(), idCrashReport);
       this.props.openCrashReportModal();
     }
