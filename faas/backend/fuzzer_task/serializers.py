@@ -38,14 +38,9 @@ class CrashReportSerializer(ModelSerializer):
         if regs is None or not RegisterSerializer(data=regs).is_valid():
             raise ParseError("'registers' field invalid or missing")
 
-
         crash_report = CrashReport.create(validated_data[u'task'],
                                           validated_data[u'signal'], validated_data[u'payload'])
         crash_report.save()
-        crash_report.task.state = 'e'
-        crash_report.task.save()
-
-
         regs = Registers.create(regs, crash_report)
         regs.save()
         return crash_report

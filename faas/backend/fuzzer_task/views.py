@@ -107,3 +107,20 @@ class TaskDetail(RetrieveAPIView):
             raise ValidationError('The task is already stopped')
 
 
+class TaskStop(RetrieveAPIView):
+    """
+    Will show information on a task including the binary file in base 64
+    """
+    permission_classes = (IsAuthenticated,)
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
+
+    def delete(self, request, *args, **kwargs):
+        instance = self.queryset.get(pk=kwargs['pk'])
+        if instance.state == 'r':
+            instance.state = 'e'
+            instance.save()
+            return Response({})
+        else:
+            raise ValidationError('The task is already stopped')
+
