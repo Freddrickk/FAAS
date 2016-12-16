@@ -27,7 +27,7 @@ class CrashReportListSerializer(ModelSerializer):
 class CrashReportSerializer(ModelSerializer):
 
     task = PrimaryKeyRelatedField(many=False, queryset=Task.objects.all())
-    registers = RegisterSerializer(many=False, required=False)
+    registers = RegisterSerializer(many=True, required=False)
 
     class Meta:
         model = CrashReport

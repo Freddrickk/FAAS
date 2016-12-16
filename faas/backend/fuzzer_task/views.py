@@ -6,12 +6,12 @@ import subprocess
 
 
 from rest_framework.generics import ListCreateAPIView, RetrieveAPIView
-from rest_framework.exceptions import ParseError
+from rest_framework.exceptions import ParseError, ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Task, CrashReport, Registers
-from .serializers import TaskSerializer, TaskListSerializer, CrashReportListSerializer, CrashReportSerializer, RegisterSerializer
+from .models import Task, CrashReport#, Registers
+from .serializers import TaskSerializer, TaskListSerializer, CrashReportListSerializer, CrashReportSerializer#, RegisterSerializer
 from .fuzzer.fuzzer import is_valid_binary
 
 
@@ -27,6 +27,13 @@ class CrashReportList(ListCreateAPIView):
         serializer = CrashReportListSerializer(self.get_queryset(), many=True)
         return Response(serializer.data)
 
+class CrashReportDetail(RetrieveAPIView):
+    """
+    Detail view of a crash report
+    """
+    permission_classes = (IsAuthenticated,)
+    queryset = CrashReport.objects.all()
+    serializer_class = CrashReportSerializer
 
 class TaskList(ListCreateAPIView):
     """
@@ -76,3 +83,16 @@ class TaskDetail(RetrieveAPIView):
     permission_classes = (IsAuthenticated,)
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
+
+    def delete(self, request, *args, **kwargs):
+        instance = self.queryset.get(pk=kwargs['pk'])
+        if instance.state == 'r':
+            #todo kill the process
+            print 'killing process #%d' % instance.pid
+            instance.state = 'k'
+            instance.save()
+            return Response({})
+        else:
+            raise ValidationError('The task is already stopped')
+
+
