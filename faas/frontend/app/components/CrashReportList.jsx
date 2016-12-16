@@ -6,7 +6,7 @@ import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColu
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
 import { openCrashReportModal, closeCrashReportModal } from '../actions/UI';
-import { fetchCrashReportDetail } from '../actions/ReportsList';
+import { fetchCrashReportDetail, fetchRegistersDetail } from '../actions/ReportsList';
 
 const paperStyle = {
   margin: 0,
@@ -19,12 +19,14 @@ class CrashReportDialogModal extends React.Component {
   constructor () {
     super();
     this.renderCrashReportDetail = this.renderCrashReportDetail.bind(this);
+    this.renderRegisters = this.renderRegisters.bind(this);
   }
 
   static mapStateToProps(state) {
     return {
       crashReportModalIsOpen: () => state.UI.crashReportModalIsOpen,
-      getCurrentCrashReport: () => state.ReportsList.currentCrashReport
+      getCurrentCrashReport: () => state.ReportsList.currentCrashReport,
+      getCurrentRegisters: () => state.ReportsList.currentRegisters
     }
   }
 
@@ -34,15 +36,31 @@ class CrashReportDialogModal extends React.Component {
     }
   }
 
+  renderRegisters() {
+    let reg =  Object.assign({}, this.props.getCurrentRegisters());
+    delete reg['crash_id'];
+    let keys = Object.keys(reg);
+    console.log(keys);
+    return (
+      <div>
+        {keys.map( (row, index) => (
+          <div>
+            <span>{row} => {reg[row]}</span>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
   renderCrashReportDetail(){
     var currentCrashReport = this.props.getCurrentCrashReport();
     if(currentCrashReport){
       return (<div>
-          PAYLOAD : {currentCrashReport.payload} <br/> <br/>
-          SIGNAL : {currentCrashReport.signal} <br/> <br/>
-          TASK : {currentCrashReport.task} <br/> <br/>
-          REGISTERS : {currentCrashReport.registers} <br/> <br/>
-          </div>);
+        PAYLOAD : {currentCrashReport.payload} <br/> <br/>
+        SIGNAL : {currentCrashReport.signal} <br/> <br/>
+        TASK : {currentCrashReport.task} <br/> <br/>
+        REGISTERS : {this.renderRegisters()} <br/> <br/>
+      </div>);
     }
     return "";
   }
@@ -85,6 +103,7 @@ class CrashReportList extends Component {
     return {
       getToken: () => state.User.credentials.token,
       getReports: () => state.ReportsList.ReportsList,
+      getRegisters: () => state.ReportsList.currentRegisters,
       getCrashReportInformation: (indexCrashReport) => state.ReportsList.ReportsList[indexCrashReport]
     }
   }
@@ -92,7 +111,8 @@ class CrashReportList extends Component {
   static mapDispatchToProps(dispatch) {
     return{
       openCrashReportModal: () => dispatch(openCrashReportModal()),
-      fetchCrashReportDetail : (token, idCrashReport) => dispatch(fetchCrashReportDetail(token, idCrashReport))
+      fetchCrashReportDetail : (token, idCrashReport) => dispatch(fetchCrashReportDetail(token, idCrashReport)),
+      fetchRegisters : (token, idCrashReport) => dispatch(fetchRegistersDetail(token, idCrashReport))
     }
   }
 
@@ -101,9 +121,10 @@ class CrashReportList extends Component {
     if(oCrashReport){
       var idCrashReport = oCrashReport.id;
       this.props.fetchCrashReportDetail(this.props.getToken(), idCrashReport);
+      this.props.fetchRegisters(this.props.getToken(), idCrashReport);
       this.props.openCrashReportModal();
     }
-  }  
+  }
 
 
   render() {

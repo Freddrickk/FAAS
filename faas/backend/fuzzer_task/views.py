@@ -10,8 +10,8 @@ from rest_framework.exceptions import ParseError, ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .models import Task, CrashReport#, Registers
-from .serializers import TaskSerializer, TaskListSerializer, CrashReportListSerializer, CrashReportSerializer#, RegisterSerializer
+from .models import Task, CrashReport, Registers
+from .serializers import TaskSerializer, TaskListSerializer, CrashReportListSerializer, CrashReportSerializer, RegisterSerializer
 from .fuzzer.fuzzer import is_valid_binary
 
 
@@ -27,6 +27,7 @@ class CrashReportList(ListCreateAPIView):
         serializer = CrashReportListSerializer(self.get_queryset(), many=True)
         return Response(serializer.data)
 
+
 class CrashReportDetail(RetrieveAPIView):
     """
     Detail view of a crash report
@@ -34,6 +35,16 @@ class CrashReportDetail(RetrieveAPIView):
     permission_classes = (IsAuthenticated,)
     queryset = CrashReport.objects.all()
     serializer_class = CrashReportSerializer
+
+
+class RegistersDetail(RetrieveAPIView):
+    """
+    Registers state of a crash report
+    """
+    permission_classes = (IsAuthenticated,)
+    queryset = Registers.objects.all()
+    serializer_class = RegisterSerializer
+    lookup_field = 'crash_report'
 
 class TaskList(ListCreateAPIView):
     """

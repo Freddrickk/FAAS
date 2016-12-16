@@ -27,7 +27,7 @@ class CrashReportListSerializer(ModelSerializer):
 class CrashReportSerializer(ModelSerializer):
 
     task = PrimaryKeyRelatedField(many=False, queryset=Task.objects.all())
-    registers = RegisterSerializer(many=True, required=False)
+    registers = RegisterSerializer(many=False, required=False)
 
     class Meta:
         model = CrashReport
@@ -37,6 +37,7 @@ class CrashReportSerializer(ModelSerializer):
         regs = validated_data.get(u'registers')
         if regs is None or not RegisterSerializer(data=regs).is_valid():
             raise ParseError("'registers' field invalid or missing")
+
 
         crash_report = CrashReport.create(validated_data[u'task'],
                                           validated_data[u'signal'], validated_data[u'payload'])

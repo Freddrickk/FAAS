@@ -12,8 +12,8 @@ class Task(models.Model):
         ('k', 'Killed')
     )
 
-    pid = models.PositiveIntegerField(null=False, blank=False)
-    state= models.CharField(choices=STATES, max_length=1, null=False, blank=False)
+    pid = models.PositiveIntegerField(default=0)
+    state= models.CharField(choices=STATES, max_length=1, default='r')
     owner = models.ForeignKey(User, null=False, blank=False, on_delete=models.CASCADE)
     name = models.CharField(max_length=100, null=False, blank=False, unique=True)
     description = models.CharField(max_length = 255, null=False, blank=True)

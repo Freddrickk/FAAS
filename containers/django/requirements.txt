@@ -7,3 +7,4 @@ drfdocs
 Markdown
 kittyfuzzer
 pyelftools
+django-extensions
