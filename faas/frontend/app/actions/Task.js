@@ -1,7 +1,7 @@
 import { setUploadTaskErrors, clearUploadTaskErrors } from './FormsErrors'
 import { fetchTaskList } from './TasksList'
 import { fetchReportsList } from './ReportsList'
-import { startBinUpload, stopBinUpload } from './UI'
+import { startBinUpload, stopBinUpload, toggleToaster } from './UI'
 
 export const SET_BINARY_FILE = 'CHANGE_BINARY_FILE';
 export const CLEAR_BINARY_FILE = 'CLEAR_BINARY_FILE';
@@ -27,6 +27,7 @@ export function clearBinaryName () {
 
 function handleJSON(json, dispatch, token) {
   if (json.hasOwnProperty('owner')) {
+    dispatch(toggleToaster(true))
     dispatch(fetchTaskList(token))
     dispatch(fetchReportsList(token))
   } else {

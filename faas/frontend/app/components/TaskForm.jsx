@@ -6,7 +6,9 @@ import { connect } from 'react-redux'
 import { TextField } from 'redux-form-material-ui'
 import RaisedButton from 'material-ui/RaisedButton';
 import FileReaderInput from 'react-file-reader-input';
+import Snackbar from 'material-ui/Snackbar';
 
+import { toggleToaster } from '../actions/UI'
 import { setBinaryFile, setBinaryName, createAndStartTask } from '../actions/Task'
 
 
@@ -50,6 +52,9 @@ class TaskForm extends Component {
     this.handleChange = this.handleChange.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
     this.showProgress = this.showProgress.bind(this)
+    this.state = {
+      open: false
+    };
   }
 
   static mapStateToProps = (state) => {
@@ -64,6 +69,7 @@ class TaskForm extends Component {
       getB64: () => state.Task.b64_binary_file,
       getToken: () => state.User.credentials.token,
       isUploading: () => state.UI.binIsUploading,
+      toaster: () => state.UI.toasterIsOpen,
       buttonIsBlocked: () => {
         return typeof state.form.taskDescriptionForm === 'undefined' ||
                typeof state.form.taskDescriptionForm.values === 'undefined';
@@ -82,7 +88,8 @@ class TaskForm extends Component {
         dispatch(setBinaryFile(b64File));
         dispatch(setBinaryName(bName));
       },
-      upload: (b64, token) => dispatch(createAndStartTask(b64, token))
+      upload: (b64, token) => dispatch(createAndStartTask(b64, token)),
+      closeToaster: () => dispatch(toggleToaster(false))
     }
   }
 
@@ -106,7 +113,14 @@ class TaskForm extends Component {
     });
     let token = this.props.getToken()
     this.props.upload(request, token)
+
   }
+
+  handleRequestClose = () => {
+    this.setState({
+      open: false,
+    });
+  };
 
   render() {
     return(
@@ -122,6 +136,12 @@ class TaskForm extends Component {
           style={buttonStyle} disabled={this.props.buttonIsBlocked() || this.props.isUploading()} />
         {this.showProgress()}
         <p style={{color: "rgb(244, 67, 54)"}} >{this.props.getErrorMessage('detail')}</p>
+        <Snackbar
+          open={this.props.toaster()}
+          message="Fuzzing task has started"
+          autoHideDuration={4000}
+          onRequestClose={this.props.closeToaster}
+        />
       </Paper>
     );
   }

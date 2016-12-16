@@ -1,6 +1,7 @@
 import { TOGGLE_LOGIN_MODAL, TOGGLE_TASK_MODAL, TOGGLE_LOGIN_FETCHING, TOGGLE_BIN_UPLOAD,
          SWITCH_BETWEEN_LOGIN_SIGNUP,
-         LOGIN_FORM, SIGNUP_FORM, TOGGLE_CRASHREPORT_MODAL} from "../actions/UI"
+         LOGIN_FORM, SIGNUP_FORM, TOGGLE_CRASHREPORT_MODAL, TOGGLE_TOASTER
+       } from "../actions/UI"
 
 const initialState = {
   loginModalIsOpen: false,
@@ -8,6 +9,7 @@ const initialState = {
   crashReportModalIsOpen: false,
   loginIsFetching: false,
   binIsUploading: false,
+  toasterIsOpen: false,
   activeAuthForm: LOGIN_FORM
 }
 
@@ -19,6 +21,11 @@ const UI = (state = initialState, action) => {
         loginModalIsOpen: action.isOpen
       });
 
+    case TOGGLE_TOASTER:
+        return Object.assign({}, state, {
+          toasterIsOpen: action.isOpen
+      });
+
     case TOGGLE_TASK_MODAL:
         return Object.assign({}, state, {
           taskModalIsOpen: action.isOpen
@@ -27,7 +34,7 @@ const UI = (state = initialState, action) => {
     case TOGGLE_CRASHREPORT_MODAL:
         return Object.assign({}, state, {
           crashReportModalIsOpen: action.isOpen
-      });        
+      });
 
     case TOGGLE_LOGIN_FETCHING:
       return Object.assign({}, state, {
