@@ -76,7 +76,8 @@ class TaskList(ListCreateAPIView):
         args = [arg for s in args for arg in s.split(' ')]
 
         # Launch the fuzzing task in the background
-        subprocess.Popen(args)
+        task.pid = subprocess.Popen(args).pid
+        task.save()
 
     def _create_bin_file(self, b64_binary_file):
         fd, path = tempfile.mkstemp()
@@ -98,8 +99,8 @@ class TaskDetail(RetrieveAPIView):
     def delete(self, request, *args, **kwargs):
         instance = self.queryset.get(pk=kwargs['pk'])
         if instance.state == 'r':
-            #todo kill the process
             print 'killing process #%d' % instance.pid
+            os.system('kill -9 {}'.format(instance.pid))
             instance.state = 'k'
             instance.save()
             return Response({})

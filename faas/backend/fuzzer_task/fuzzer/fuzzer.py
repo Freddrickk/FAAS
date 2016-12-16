@@ -28,7 +28,7 @@ def launch_fuzzing(name, path, args, template, token, report_id):
 
     fuzzer.set_model(model)
     fuzzer.set_target(target)
-    fuzzer.set_delay_between_tests(0.5)
+    fuzzer.set_delay_between_tests(0.2)
     fuzzer.start()
 
     interface.stop()
