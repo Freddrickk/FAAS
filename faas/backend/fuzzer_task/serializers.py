@@ -57,7 +57,7 @@ class TaskSerializer(ModelSerializer):
 
     class Meta:
         model = Task
-        fields = ('id', 'name', 'owner', 'description', 'b64_binary_file', 'template')
+        fields = ('id', 'name', 'owner', 'description', 'b64_binary_file', 'template', 'state')
 
 
 class TaskListSerializer(ModelSerializer):
