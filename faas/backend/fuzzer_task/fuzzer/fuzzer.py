@@ -55,9 +55,6 @@ if __name__ == '__main__':
     parser.add_argument('--template', '-t', required=True, help='The fuzzing template')
     parser.add_argument('--token', '-k', required=True, help='FAAS token')
     parser.add_argument('--task-id', '-r', required=True, type=int, help='Id of the related Task')
-    # parser.add_argument('--port', '-p', required=False, type=int, help='REST API port')
-    # parser.add_argument('--host', '-h', required=False, help='REST API host')
-    # parser.add_argument('--uri', '-u', required=False, help='REST API uri')
 
     args = parser.parse_args()
 
