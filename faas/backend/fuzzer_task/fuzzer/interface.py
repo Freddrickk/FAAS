@@ -36,6 +36,8 @@ class FAASReporterThread(Thread):
             report_list = dataman.get_report_list()
             total_report = len(report_list)
 
+        self._end_task()
+
     def _format_report(self, data):
         report = {}
         regs = data['registers']
@@ -63,10 +65,17 @@ class FAASReporterThread(Thread):
         except Exception as e:
             print e.message
 
+    def _end_task(self):
+        url = "{host}:{port}".format(host='http://{}'.format(self.host), port=self.port)
+        endpoint = '/api/task/stop/{}/'.format(self.task_id)
+
+        try:
+            r = self.session.delete(url + endpoint, timeout=5)
+            print(r.status_code)
+        except Exception as e:
+            print e.message
+
     def _init_session(self, token):
-        '''
-        f483a664fbfec106e5b88145e5e8f9d899bd555e
-        '''
         self.session = requests.Session()
         self.session.headers.update({'authorization': 'Token {}'.format(token)})
 
