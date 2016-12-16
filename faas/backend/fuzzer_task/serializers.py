@@ -42,6 +42,9 @@ class CrashReportSerializer(ModelSerializer):
         crash_report = CrashReport.create(validated_data[u'task'],
                                           validated_data[u'signal'], validated_data[u'payload'])
         crash_report.save()
+        crash_report.task.state = 'e'
+        crash_report.task.save()
+
 
         regs = Registers.create(regs, crash_report)
         regs.save()
@@ -54,7 +57,7 @@ class TaskSerializer(ModelSerializer):
 
     class Meta:
         model = Task
-        fields = ('name', 'owner', 'description', 'b64_binary_file', 'template')
+        fields = ('id', 'name', 'owner', 'description', 'b64_binary_file', 'template')
 
 
 class TaskListSerializer(ModelSerializer):
@@ -63,5 +66,6 @@ class TaskListSerializer(ModelSerializer):
 
     class Meta:
         model = Task
-        fields = ('id', 'owner', 'name', 'description')
+        fields = ('id', 'owner', 'name', 'description', 'state')
+        read_only_fields = ('state',)
 

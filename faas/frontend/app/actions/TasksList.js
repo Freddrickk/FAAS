@@ -56,3 +56,17 @@ export function fetchTaskList(token) {
      .then(json => handleDetailJSON(json, dispatch))
  }
 }
+
+export function fetchKillTask(token, idTask) {
+ return dispatch => {
+   let headers = new Headers({
+    'Content-Type': 'application/json',
+    'Authorization': 'Token ' + token
+   });
+
+  fetch('/api/task/'+idTask+'/', {
+    headers: headers,
+    method: 'delete'})
+    .then(response => response.json())
+}
+}

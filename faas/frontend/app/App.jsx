@@ -33,8 +33,21 @@ if (typeof token != 'undefined') {
 store.dispatch(fetchTaskList(token));
 store.dispatch(fetchReportsList(token));
 
+const repopulate = () => {
+  store.dispatch(fetchTaskList(token));
+  store.dispatch(fetchReportsList(token));
+}
+
+
+
 
 class App extends React.Component {
+
+  componentDidMount() {
+    console.log('mounted')
+    var interval = window.setInterval(repopulate, 2000);
+  }
+
    render() {
       return (
         <MuiThemeProvider>
