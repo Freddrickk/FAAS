@@ -20,6 +20,7 @@ class CrashReportDialogModal extends React.Component {
     super();
     this.renderCrashReportDetail = this.renderCrashReportDetail.bind(this);
     this.renderRegisters = this.renderRegisters.bind(this);
+    this.renderPayload = this.renderPayload.bind(this);
   }
 
   static mapStateToProps(state) {
@@ -40,10 +41,9 @@ class CrashReportDialogModal extends React.Component {
     let reg =  Object.assign({}, this.props.getCurrentRegisters());
     delete reg['crash_id'];
     let keys = Object.keys(reg);
-    console.log(keys);
     return (
       <div>
-        {keys.map( (row, index) => (
+        {keys.map((row, index) => (
           <div>
             <span>{row} => {reg[row]}</span>
           </div>
@@ -52,14 +52,27 @@ class CrashReportDialogModal extends React.Component {
     )
   }
 
+  renderPayload(length) {
+    let unFormated = atob(this.props.getCurrentCrashReport().payload)
+    var formated = ""
+    for (var i = 0; i < unFormated.length; i += length) {
+      var outer = i + length;
+      if (outer > unFormated.length)
+        outer = unFormated.length;
+      formated = formated + unFormated.substring(i, outer) + '\n'
+    }
+
+    return formated;
+  }
+
   renderCrashReportDetail(){
     var currentCrashReport = this.props.getCurrentCrashReport();
     if(currentCrashReport){
       return (<div>
-        PAYLOAD : {currentCrashReport.payload} <br/> <br/>
         SIGNAL : {currentCrashReport.signal} <br/> <br/>
         TASK : {currentCrashReport.task} <br/> <br/>
         REGISTERS : {this.renderRegisters()} <br/> <br/>
+        PAYLOAD : <br />{this.renderPayload(20)}<br/> <br/>
       </div>);
     }
     return "";
@@ -81,9 +94,11 @@ class CrashReportDialogModal extends React.Component {
           title="Crash Report Details"
           actions={actions}
           modal={true}
+          autoScrollBodyContent={true}
+          contentStyle={{color: "red"}}
           open={this.props.crashReportModalIsOpen()}
         >
-        {this.renderCrashReportDetail()}
+          {this.renderCrashReportDetail()}
         </Dialog>
       </div>
     );
